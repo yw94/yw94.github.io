@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>web简介</title>
+    <url>/2020/03/10/web-description/</url>
+    <content><![CDATA[<p>Web——建立在socket之上，通过http会话来交换资源</p>
+<a id="more"></a>
+<p>正文</p>
+]]></content>
+      <categories>
+        <category>web</category>
+      </categories>
+      <tags>
+        <tag>web</tag>
+        <tag>python</tag>
+        <tag>WSGI</tag>
+      </tags>
+  </entry>
+</search>
