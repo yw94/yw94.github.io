@@ -22,7 +22,7 @@
     <content><![CDATA[<p>基于爬虫监控系统的一次简单的web内容分享</p>
 <a id="more"></a>
 
-<h4 id="前后端分离"><a href="#前后端分离" class="headerlink" title="前后端分离"></a>前后端分离</h4><p>前端与后端之间有两种协作方式，一种是<strong>服务器端渲染</strong>，一种是<strong>前后端分离</strong>。</p>
+<h4 id="前后端分离"><a href="#前后端分离" class="headerlink" title="前后端分离"></a>前后端分离</h4><p>前端与后端之间有两种协作方式，一种是<code>服务器端渲染</code>，一种是<code>前后端分离</code>。</p>
 <p>服务器端渲染的方式，是指在服务器端就将网页直接生成，浏览器这里拿到的是一整个网页，CSS和JS的部分是在浏览器端执行的，而Html网页的内容部分，是由服务器端生成的。<br>第二种方式就是前后端分离的方式，是浏览器端先拿到HTML，然后通过调用后端接口获取数据。</p>
 <p>所以两种方式的区别关键，就在于是，HTML是在哪儿生成的，浏览器和服务端传递的是什么。<br>在前后端分离的方式，浏览器和服务端传递的是数据，而在服务器端渲染的过程中，传递的是HTML网页。</p>
 <p>以上是这两种方式的差别，下面介绍一下这两种方式的优劣。</p>
@@ -33,7 +33,7 @@
 <h4 id="技术栈介绍"><a href="#技术栈介绍" class="headerlink" title="技术栈介绍"></a>技术栈介绍</h4><p><strong>前端</strong><br><a href="https://cn.vuejs.org/index.html" target="_blank" rel="noopener">vue</a> + <a href="https://vuex.vuejs.org/zh/guide/" target="_blank" rel="noopener">VueX</a> + <a href="https://router.vuejs.org/zh/" target="_blank" rel="noopener">Vue Router</a><br>参考了后台前端解决方案<a href="https://panjiachen.github.io/vue-element-admin-site/zh/" target="_blank" rel="noopener">vue-element-admin</a></p>
 <p><strong>后端</strong><br><a href="https://www.djangoproject.com/" target="_blank" rel="noopener">django</a> + <a href="https://graphql.cn/" target="_blank" rel="noopener">graphql</a></p>
 <p><strong>部署</strong><br>nginx + uwsgi</p>
-<h4 id="项目部署、Nginx"><a href="#项目部署、Nginx" class="headerlink" title="项目部署、Nginx"></a>项目部署、Nginx</h4><h4 id="WSGI协议简介"><a href="#WSGI协议简介" class="headerlink" title="WSGI协议简介"></a>WSGI协议简介</h4><p>Web服务器网关接口（Python Web Server Gateway Interface，缩写为WSGI）是为Python语言定义的Web服务器和Web应用程序或框架之间的一种简单而通用的接口。该规范的具体描述在<a href="https://www.python.org/dev/peps/pep-3333/" target="_blank" rel="noopener">PEP3333</a>。</p>
+<h4 id="WSGI协议简介"><a href="#WSGI协议简介" class="headerlink" title="WSGI协议简介"></a>WSGI协议简介</h4><p>Web服务器网关接口（Python Web Server Gateway Interface，缩写为WSGI）是为Python语言定义的Web服务器和Web应用程序或框架之间的一种简单而通用的接口。该规范的具体描述在<a href="https://www.python.org/dev/peps/pep-3333/" target="_blank" rel="noopener">PEP3333</a>。</p>
 <p>WSGI主要分为两个部分：<br><strong>Server/Gateway:</strong> 即是HTTP Server，负责从客户端接收http请求，对http请求进行解析，然后调用application，给application提供两个参数environ（环境信息）、start_response（一个回调函数，这个回调函数是用来将应用程序设置的http header和status等信息传递给服务器方），并将application返回的response返回给客户端。<br><strong>Application/Framework:</strong> 一个python web应用或web框架，处理请求，生成返回的header、body和status，并将处理结果返回给server。<br><strong>Middleware:</strong>  略过</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs Python"><span class="hljs-comment"># wsgiref.simple_server.demo_app</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">demo_app</span><span class="hljs-params">(environ, start_response)</span>:</span><br>    <span class="hljs-keyword">from</span> io <span class="hljs-keyword">import</span> StringIO<br>    stdout = StringIO()<br>    print(<span class="hljs-string">"Hello world!"</span>, file=stdout)<br>    print(file=stdout)<br>    h = sorted(environ.items())<br>    <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">in</span> h:<br>        print(k,<span class="hljs-string">'='</span>,repr(v), file=stdout)<br>    start_response(<span class="hljs-string">"200 OK"</span>, [(<span class="hljs-string">'Content-Type'</span>,<span class="hljs-string">'text/plain; charset=utf-8'</span>)])<br>    <span class="hljs-keyword">return</span> [stdout.getvalue().encode(<span class="hljs-string">"utf-8"</span>)]<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Application</span>:</span><br>    ...<br>    <br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__call__</span><span class="hljs-params">(self, environ, start_response)</span>:</span><br>        body = <span class="hljs-string">b"..."</span><br>        status = <span class="hljs-string">"200 OK"</span><br>        headers = [(<span class="hljs-string">"key"</span>, <span class="hljs-string">"value"</span>), ...]<br>        start_response(status, headers)<br>        <span class="hljs-keyword">return</span> [body]<br></code></pre></td></tr></table></figure>
 
@@ -42,7 +42,7 @@
 <p>GUNICORN<br>UWSGI</p>
 </blockquote>
 <p>WSGI的优点:<br>多样的部署选择和组件之间的高度解耦。<br>由于上面提到的高度解耦特性，理论上，任何一个符合WSGI规范的App都可以部署在任何一个实现了WSGI规范的Server上，这给Python Web应用的部署带来了极大的灵活性。<br>缺点: 未发现</p>
-<h4 id="跨域资源共享CORS介绍"><a href="#跨域资源共享CORS介绍" class="headerlink" title="跨域资源共享CORS介绍"></a>跨域资源共享CORS介绍</h4><p>当一个资源从与该资源本身所在的服务器不同的<strong>域、协议或端口</strong>请求一个资源时，资源会发起一个<strong>跨域HTTP请求</strong>。<br>出于安全原因，浏览器限制从脚本内发起的跨源HTTP请求。例如，XMLHttpRequest和Fetch API遵循同源策略。<br>这意味着使用这些API的Web应用程序只能从加载应用程序的同一个域请求HTTP资源，<strong>除非响应报文包含了正确CORS响应头</strong>。<br><em>所以跨域限制访问，其实是浏览器的限制。</em><br><em>说明：并不一定是浏览器限制了发起跨站请求，也可能是跨站请求可以正常发起，但是返回结果被浏览器拦截了（后文有说明）。</em></p>
+<h4 id="跨域资源共享CORS介绍"><a href="#跨域资源共享CORS介绍" class="headerlink" title="跨域资源共享CORS介绍"></a>跨域资源共享CORS介绍</h4><p>当一个资源从与该资源本身所在的服务器不同的<code>域、协议或端口</code>请求一个资源时，资源会发起一个<code>跨域HTTP请求</code>。<br>出于安全原因，浏览器限制从脚本内发起的跨源HTTP请求。例如，XMLHttpRequest和Fetch API遵循同源策略。<br>这意味着使用这些API的Web应用程序只能从加载应用程序的同一个域请求HTTP资源，<code>除非响应报文包含了正确CORS响应头</code>。<br><em>所以跨域限制访问，其实是浏览器的限制。</em><br><em>说明：并不一定是浏览器限制了发起跨站请求，也可能是跨站请求可以正常发起，但是返回结果被浏览器拦截了（后文有说明）。</em></p>
 <p>跨域资源共享（CORS）机制允许Web应用服务器进行跨域访问控制，从而使跨域数据传输得以安全进行。现代浏览器支持在API容器中（例如XMLHttpRequest或Fetch使用CORS，以降低跨域HTTP请求所带来的风险。</p>
 <p>浏览器将CORS请求分成两类：简单请求（simple request）和非简单请求（not-so-simple request）。<br>若请求满足所有下述条件，则该请求可视为“简单请求”：</p>
 <ul>
@@ -65,9 +65,9 @@
 </ul>
 </li>
 </ul>
-<p>浏览器对这两种请求的处理是不同的。<br>对于简单请求，浏览器直接发出CORS请求。具体来说，就是在头信息之中，增加一个Origin字段。然后根据服务器的响应来判断服务器上的资源是否允许该Origin访问。<br>如果是非简单请求，浏览器会首先使用<strong>OPTIONS</strong>方法发起一个预检请求到服务器，以获知服务器是否允许该实际请求。”预检请求“的使用，可以避免跨域请求对服务器的用户数据产生未预期的影响。<br>服务器端可以设置Access-Control-Max-Age字段缓存预检请求的响应结果。在缓存有效期内，该资源的请求（URL和header字段都相同的情况下）不会再触发预检。注意，该缓存只针对这一个请求URL和相同的Header，无法针对整个域或者模糊匹配URL做缓存。</p>
+<p>浏览器对这两种请求的处理是不同的。<br>对于简单请求，浏览器直接发出CORS请求。具体来说，就是在头信息之中，增加一个Origin字段。然后根据服务器的响应来判断服务器上的资源是否允许该Origin访问。<br>如果是非简单请求，浏览器会首先使用<code>OPTIONS</code>方法发起一个预检请求到服务器，以获知服务器是否允许该实际请求。”预检请求“的使用，可以避免跨域请求对服务器的用户数据产生未预期的影响。<br>服务器端可以设置Access-Control-Max-Age字段缓存预检请求的响应结果。在缓存有效期内，该资源的请求（URL和header字段都相同的情况下）不会再触发预检。注意，该缓存只针对这一个请求URL和相同的Header，无法针对整个域或者模糊匹配URL做缓存。</p>
 <p>对于附带身份凭证（Cookie）的请求<br>要发送附带Cookie的请求到服务端，首先在客户端要将XMLHttpRequest的withCredentials属性标志设置为true。<br>否则，即使服务器同意发送Cookie，浏览器也不会发送。或者，服务器要求设置Cookie，浏览器也不会处理。<br>当服务器收到这个请求后，返回给浏览器的Response Headers中必须携带Access-Control-Allow-Credentials: true，否则即使浏览器收到response，也会拦截，不会把响应内容返回给请求的发送者。<br>另外，对于附带身份凭证的请求，服务器不得设置Access-Control-Allow-Origin 的值为”*”（这个值为”*”表明该资源可以被任意外域访问），而必须指定明确的、与请求网页一致的域名。<br>同时，Cookie依然遵循同源政策，只有用服务器域名设置的Cookie才会上传，其他域名的Cookie并不会上传，且（跨源）原网页代码中的document.cookie也无法读取服务器域名下的Cookie。</p>
-<h4 id="web身份验证-Cookie-Session-JWT-OAuth"><a href="#web身份验证-Cookie-Session-JWT-OAuth" class="headerlink" title="web身份验证 Cookie Session JWT OAuth"></a>web身份验证 Cookie Session JWT OAuth</h4><h4 id="Restful接口规范介绍"><a href="#Restful接口规范介绍" class="headerlink" title="Restful接口规范介绍"></a>Restful接口规范介绍</h4><p>REST – Representational State Transfer 直接翻译：表现层状态转移。<br>Restful是一种接口设计风格 —— URL定位资源，用HTTP动词（GET,POST,DELETE,DETC）描述操作。<br>查询：GET<br>新增：POST<br>修改：PUT、PATCH<br>删除：DELETE</p>
+<h4 id="Restful接口规范介绍"><a href="#Restful接口规范介绍" class="headerlink" title="Restful接口规范介绍"></a>Restful接口规范介绍</h4><p>REST – Representational State Transfer 直接翻译：表现层状态转移。<br>Restful是一种接口设计风格 —— URL定位资源，用HTTP动词（GET,POST,DELETE,DETC）描述操作。<br>查询：GET<br>新增：POST<br>修改：PUT、PATCH<br>删除：DELETE</p>
 <p>Restful风格的url设计的简单示例<br>rest协议是面向资源的，假如要管理一些用户，那么将用户看作是一种资源：</p>
 <ul>
 <li>GET /users/{userId}  获取userId对应的user信息</li>
@@ -106,7 +106,7 @@
 </li>
 <li>Code-On-Demand 支持按需代码（可选）</li>
 </ol>
-<h4 id="GraphQL接口介绍"><a href="#GraphQL接口介绍" class="headerlink" title="GraphQL接口介绍"></a>GraphQL接口介绍</h4><p>GraphQL是一种API查询语言。<br>它可以将接口的返回值，从静态变为动态，即调用者来声明接口返回什么数据。很大程度上可以进一步解耦前后端的关联。<br>在GraphQL中，我们通过预先定义一张<strong>Schema</strong>和声明一些<strong>Type</strong>来达到上述效果，我们需要知道：</p>
+<h4 id="GraphQL接口介绍"><a href="#GraphQL接口介绍" class="headerlink" title="GraphQL接口介绍"></a>GraphQL接口介绍</h4><p>GraphQL是一种API查询语言。<br>它可以将接口的返回值，从静态变为动态，即调用者来声明接口返回什么数据。很大程度上可以进一步解耦前后端的关联。<br>在GraphQL中，我们通过预先定义一张<code>Schema</code>和声明一些<code>Type</code>来达到上述效果，我们需要知道：</p>
 <ul>
 <li>对于数据模型的抽象是通过Type来描述的</li>
 <li>对于接口获取数据的逻辑是通过Schema来描述的</li>
