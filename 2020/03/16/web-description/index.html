@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic|Microsoft YaHei:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Pisces","version":"7.7.2","exturl":false,"sidebar":{"position":"left","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="基于爬虫监控系统的一次简单的web内容分享">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web简介">
+<meta property="og:url" content="http://yoursite.com/2020/03/16/web-description/index.html">
+<meta property="og:site_name" content="你好，我是闫伟">
+<meta property="og:description" content="基于爬虫监控系统的一次简单的web内容分享">
+<meta property="article:published_time" content="2020-03-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-03-20T03:22:44.629Z">
+<meta property="article:author" content="闫伟">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="web">
+<meta property="article:tag" content="WSGI">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/16/web-description/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>web简介 | 你好，我是闫伟</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">你好，我是闫伟</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">举目见日，不见长安。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">2</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/16/web-description/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="闫伟">
+      <meta itemprop="description" content="闫伟的个人博客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="你好，我是闫伟">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          web简介
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-16 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-16T00:00:00+08:00">2020-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-20 11:22:44" itemprop="dateModified" datetime="2020-03-20T11:22:44+08:00">2020-03-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/web/" itemprop="url" rel="index"><span itemprop="name">web</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/16/web-description/" class="post-meta-item leancloud_visitors" data-flag-title="web简介" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2020/03/16/web-description/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2020/03/16/web-description/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>基于爬虫监控系统的一次简单的web内容分享</p>
+<a id="more"></a>
+
+<h4 id="前后端分离"><a href="#前后端分离" class="headerlink" title="前后端分离"></a>前后端分离</h4><p>前端与后端之间有两种协作方式，一种是<strong>服务器端渲染</strong>，一种是<strong>前后端分离</strong>。</p>
+<p>服务器端渲染的方式，是指在服务器端就将网页直接生成，浏览器这里拿到的是一整个网页，CSS和JS的部分是在浏览器端执行的，而Html网页的内容部分，是由服务器端生成的。<br>第二种方式就是前后端分离的方式，是浏览器端先拿到HTML，然后通过调用后端接口获取数据。</p>
+<p>所以两种方式的区别关键，就在于是，HTML是在哪儿生成的，浏览器和服务端传递的是什么。<br>在前后端分离的方式，浏览器和服务端传递的是数据，而在服务器端渲染的过程中，传递的是HTML网页。</p>
+<p>以上是这两种方式的差别，下面介绍一下这两种方式的优劣。</p>
+<p><strong>1 数据量</strong><br>前后端分离中传递数据，所以传输量比较小。<br>服务器端渲染，会传输更大的数据，而且，会有很多内容是重复的。<br><strong>2 体验</strong><br>前后端多了一个渲染数据的过程，服务器端省去了这个过程。这也是一直被提到的首屏渲染的问题。<br><strong>3 解耦</strong><br>前后端分离中，传输的是数据，Model，数据怎么展示，全部交给前端来处理，后端只负责提供数据。<br>服务器端渲染中，传输的是Html，后端传给前端的Model，通常是通过Hidden的Input来处理，或者是直接用模板技术生成.数据和展现并未分离。<br><strong>4 控制</strong><br>网页之间有各种跳转交互，在前后端分离中，跳转的页面控制，全部是由前端来决定。跟后端完全没有关系。<br>在服务器端渲染的方式中，大部分是由后端来决定，少部分是由前端来决定。<br><strong>5 SEO</strong><br>前后端分离的方式，通常的载体是SPA，所以拿到的是没有数据的空壳子，很多搜索引擎只认识html里的内容，不认识js渲染生成的内容，搜索引擎不识别，也就不会给一个好排名，会导致单页应用做出来的网页在搜索引擎上的排名差。<br>而服务器端渲染的方式，因为生成的是网页，所以对SEO支持比较好。</p>
+<blockquote>
+<p><em>SEO: 搜索引擎优化</em><br><em>SPA: 单页面应用</em></p>
+</blockquote>
+<h4 id="技术栈介绍"><a href="#技术栈介绍" class="headerlink" title="技术栈介绍"></a>技术栈介绍</h4><p><strong>前端</strong><br><a href="https://cn.vuejs.org/index.html" target="_blank" rel="noopener">vue</a> + <a href="https://vuex.vuejs.org/zh/guide/" target="_blank" rel="noopener">VueX</a> + <a href="https://router.vuejs.org/zh/" target="_blank" rel="noopener">Vue Router</a><br>参考了后台前端解决方案<a href="https://panjiachen.github.io/vue-element-admin-site/zh/" target="_blank" rel="noopener">vue-element-admin</a></p>
+<p><strong>后端</strong><br><a href="https://www.djangoproject.com/" target="_blank" rel="noopener">django</a> + <a href="https://graphql.cn/" target="_blank" rel="noopener">graphql</a></p>
+<p><strong>部署</strong><br>nginx + uwsgi</p>
+<h4 id="项目部署、Nginx"><a href="#项目部署、Nginx" class="headerlink" title="项目部署、Nginx"></a>项目部署、Nginx</h4><h4 id="WSGI协议简介"><a href="#WSGI协议简介" class="headerlink" title="WSGI协议简介"></a>WSGI协议简介</h4><p>Web服务器网关接口（Python Web Server Gateway Interface，缩写为WSGI）是为Python语言定义的Web服务器和Web应用程序或框架之间的一种简单而通用的接口。该规范的具体描述在<a href="https://www.python.org/dev/peps/pep-3333/" target="_blank" rel="noopener">PEP3333</a>。</p>
+<p>WSGI主要分为两个部分：<br><strong>Server/Gateway:</strong> 即是HTTP Server，负责从客户端接收http请求，对http请求进行解析，然后调用application，给application提供两个参数environ（环境信息）、start_response（一个回调函数，这个回调函数是用来将应用程序设置的http header和status等信息传递给服务器方），并将application返回的response返回给客户端。<br><strong>Application/Framework:</strong> 一个python web应用或web框架，处理请求，生成返回的header、body和status，并将处理结果返回给server。<br><strong>Middleware:</strong>  略过</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs Python"><span class="hljs-comment"># wsgiref.simple_server.demo_app</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">demo_app</span><span class="hljs-params">(environ, start_response)</span>:</span><br>    <span class="hljs-keyword">from</span> io <span class="hljs-keyword">import</span> StringIO<br>    stdout = StringIO()<br>    print(<span class="hljs-string">"Hello world!"</span>, file=stdout)<br>    print(file=stdout)<br>    h = sorted(environ.items())<br>    <span class="hljs-keyword">for</span> k,v <span class="hljs-keyword">in</span> h:<br>        print(k,<span class="hljs-string">'='</span>,repr(v), file=stdout)<br>    start_response(<span class="hljs-string">"200 OK"</span>, [(<span class="hljs-string">'Content-Type'</span>,<span class="hljs-string">'text/plain; charset=utf-8'</span>)])<br>    <span class="hljs-keyword">return</span> [stdout.getvalue().encode(<span class="hljs-string">"utf-8"</span>)]<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Application</span>:</span><br>    ...<br>    <br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__call__</span><span class="hljs-params">(self, environ, start_response)</span>:</span><br>        body = <span class="hljs-string">b"..."</span><br>        status = <span class="hljs-string">"200 OK"</span><br>        headers = [(<span class="hljs-string">"key"</span>, <span class="hljs-string">"value"</span>), ...]<br>        start_response(status, headers)<br>        <span class="hljs-keyword">return</span> [body]<br></code></pre></td></tr></table></figure>
+
+<p>flask、django、tornado都是wsgi框架，使用框架，我们只需要实现业务逻辑。WSGI把来自socket的数据包解析为http格式，Server会传递environ跟start_response给Application，等到Application返回值之后，再socket send返回客户端。<br>Django开发服务器使用的是python原生的wsgiref工具包。<br>Flask自带了一个基于Werkzeug的调试用服务器。根据Flask的文档，在生产环境不应该使用内建的调试服务器，而应该采取以下方式之一进行部署：</p>
+<blockquote>
+<p>GUNICORN<br>UWSGI</p>
+</blockquote>
+<p>WSGI的优点:<br>多样的部署选择和组件之间的高度解耦。<br>由于上面提到的高度解耦特性，理论上，任何一个符合WSGI规范的App都可以部署在任何一个实现了WSGI规范的Server上，这给Python Web应用的部署带来了极大的灵活性。<br>缺点: 未发现</p>
+<h4 id="跨域资源共享CORS介绍"><a href="#跨域资源共享CORS介绍" class="headerlink" title="跨域资源共享CORS介绍"></a>跨域资源共享CORS介绍</h4><p>当一个资源从与该资源本身所在的服务器不同的<strong>域、协议或端口</strong>请求一个资源时，资源会发起一个<strong>跨域HTTP请求</strong>。<br>出于安全原因，浏览器限制从脚本内发起的跨源HTTP请求。例如，XMLHttpRequest和Fetch API遵循同源策略。<br>这意味着使用这些API的Web应用程序只能从加载应用程序的同一个域请求HTTP资源，<strong>除非响应报文包含了正确CORS响应头</strong>。<br><em>所以跨域限制访问，其实是浏览器的限制。</em><br><em>说明：并不一定是浏览器限制了发起跨站请求，也可能是跨站请求可以正常发起，但是返回结果被浏览器拦截了（后文有说明）。</em></p>
+<p>跨域资源共享（CORS）机制允许Web应用服务器进行跨域访问控制，从而使跨域数据传输得以安全进行。现代浏览器支持在API容器中（例如XMLHttpRequest或Fetch使用CORS，以降低跨域HTTP请求所带来的风险。</p>
+<p>浏览器将CORS请求分成两类：简单请求（simple request）和非简单请求（not-so-simple request）。<br>若请求满足所有下述条件，则该请求可视为“简单请求”：</p>
+<ul>
+<li>使用下列方法之一：<ul>
+<li>GET</li>
+<li>HEAD</li>
+<li>POST</li>
+</ul>
+</li>
+<li>HTTP Headers不超出以下几种字段：<ul>
+<li>Accept</li>
+<li>Accept-Language</li>
+<li>Content-Language</li>
+<li>Content-Type（只限于三个值：text/plain、multipart/form-data、application/x-www-form-urlencoded）</li>
+<li>DPR</li>
+<li>Downlink</li>
+<li>Save-Data</li>
+<li>Viewport-Width</li>
+<li>Width</li>
+</ul>
+</li>
+</ul>
+<p>浏览器对这两种请求的处理是不同的。<br>对于简单请求，浏览器直接发出CORS请求。具体来说，就是在头信息之中，增加一个Origin字段。然后根据服务器的响应来判断服务器上的资源是否允许该Origin访问。<br>如果是非简单请求，浏览器会首先使用<strong>OPTIONS</strong>方法发起一个预检请求到服务器，以获知服务器是否允许该实际请求。”预检请求“的使用，可以避免跨域请求对服务器的用户数据产生未预期的影响。<br>服务器端可以设置Access-Control-Max-Age字段缓存预检请求的响应结果。在缓存有效期内，该资源的请求（URL和header字段都相同的情况下）不会再触发预检。注意，该缓存只针对这一个请求URL和相同的Header，无法针对整个域或者模糊匹配URL做缓存。</p>
+<p>对于附带身份凭证（Cookie）的请求<br>要发送附带Cookie的请求到服务端，首先在客户端要将XMLHttpRequest的withCredentials属性标志设置为true。<br>否则，即使服务器同意发送Cookie，浏览器也不会发送。或者，服务器要求设置Cookie，浏览器也不会处理。<br>当服务器收到这个请求后，返回给浏览器的Response Headers中必须携带Access-Control-Allow-Credentials: true，否则即使浏览器收到response，也会拦截，不会把响应内容返回给请求的发送者。<br>另外，对于附带身份凭证的请求，服务器不得设置Access-Control-Allow-Origin 的值为”*”（这个值为”*”表明该资源可以被任意外域访问），而必须指定明确的、与请求网页一致的域名。<br>同时，Cookie依然遵循同源政策，只有用服务器域名设置的Cookie才会上传，其他域名的Cookie并不会上传，且（跨源）原网页代码中的document.cookie也无法读取服务器域名下的Cookie。</p>
+<h4 id="web身份验证-Cookie-Session-JWT-OAuth"><a href="#web身份验证-Cookie-Session-JWT-OAuth" class="headerlink" title="web身份验证 Cookie Session JWT OAuth"></a>web身份验证 Cookie Session JWT OAuth</h4><h4 id="Restful接口规范介绍"><a href="#Restful接口规范介绍" class="headerlink" title="Restful接口规范介绍"></a>Restful接口规范介绍</h4><p>REST – Representational State Transfer 直接翻译：表现层状态转移。<br>Restful是一种接口设计风格 —— URL定位资源，用HTTP动词（GET,POST,DELETE,DETC）描述操作。<br>查询：GET<br>新增：POST<br>修改：PUT、PATCH<br>删除：DELETE</p>
+<p>Restful风格的url设计的简单示例<br>rest协议是面向资源的，假如要管理一些用户，那么将用户看作是一种资源：</p>
+<ul>
+<li>GET /users/{userId}  获取userId对应的user信息</li>
+<li>POST /users 创建一个新的user</li>
+<li>PUT、PATCH /users/{userId} 更改userId对应的user信息</li>
+<li>DELETE /users/{userId} 删除userId对应的user。</li>
+</ul>
+<p>Restful的六个约束</p>
+<ol>
+<li>Client-Server 客户端服务器分离<ul>
+<li>优点，提高用户界面的便携性（操作简单）</li>
+<li>通过简化服务器提高可伸缩性（高性能，低成本）</li>
+<li>允许组件分别优化（可以让服务端和客户端分别进行改进和优化）</li>
+</ul>
+</li>
+<li>Statusless 无状态，从客户端的每个请求要包含服务器所需要的所有信息<ul>
+<li>提高可见性（可以单独考虑每个请求）</li>
+<li>提高了可靠性（更容易从局部故障中修复）</li>
+<li>提高可扩展性（降低了服务器资源使用）</li>
+</ul>
+</li>
+<li>Cachable 缓存，服务器返回信息必须被标记是否可以缓存，如果缓存，客户端可能会重用之前的信息发送请求<ul>
+<li>减少交互次数</li>
+<li>减少交互的平均延迟</li>
+</ul>
+</li>
+<li>Layered System 分层系统，封装服务，引入中间层。<ul>
+<li>限制了系统的复杂性</li>
+<li>提高可扩展性</li>
+</ul>
+</li>
+<li>Uniform Interface 统一接口<ul>
+<li>提高交互的可见性</li>
+<li>鼓励单独改善组件</li>
+</ul>
+</li>
+<li>Code-On-Demand 支持按需代码（可选）</li>
+</ol>
+<h4 id="GraphQL接口介绍"><a href="#GraphQL接口介绍" class="headerlink" title="GraphQL接口介绍"></a>GraphQL接口介绍</h4><p>GraphQL是一种API查询语言。<br>它可以将接口的返回值，从静态变为动态，即调用者来声明接口返回什么数据。很大程度上可以进一步解耦前后端的关联。<br>在GraphQL中，我们通过预先定义一张<strong>Schema</strong>和声明一些<strong>Type</strong>来达到上述效果，我们需要知道：</p>
+<ul>
+<li>对于数据模型的抽象是通过Type来描述的</li>
+<li>对于接口获取数据的逻辑是通过Schema来描述的</li>
+</ul>
+<p>简单示例：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 文章</span><br>type ArticleType &#123;<br>  id: ID!<br>  text: String!<br>  isPublished: Boolean<br>  author: AuthorType<br>&#125;<br><br><span class="hljs-comment"># 作者</span><br>type AuthorType &#123;<br>  id: ID!<br>  name: String!<br>  age: Int<br>  articles: [ArticleType!]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>几个查询语句</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><code class="hljs applescript"><span class="hljs-comment"># 只查询文章信息，不包含作者</span><br>query &#123;<br>  ArticleType &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">text</span><br>  &#125;<br>&#125;<br><br><span class="hljs-comment"># 查询文章信息，同时需要作者信息</span><br>query &#123;<br>  ArticleType &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">text</span><br>    author &#123;<br>      <span class="hljs-built_in">name</span><br>      age<br>    &#125;<br>  &#125;<br>&#125;<br><br><span class="hljs-comment"># 查询某个作者的文章</span><br>query(<br>  $authorId: ID!<br>) &#123;<br>  ArticleType(<br>    authorId: $authorId<br>  ) &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">text</span><br>  &#125;<br>&#125;<br><br><span class="hljs-comment"># 只查询作者信息</span><br>query &#123;<br>  AuthorType &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">name</span><br>    age<br>  &#125;<br>&#125;<br><br><span class="hljs-comment"># 查询作者信息，同时列出该作者的文章</span><br>query &#123;<br>  AuthorType &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">name</span><br>    age<br>    articles &#123;<br>      <span class="hljs-built_in">id</span><br>      <span class="hljs-built_in">text</span><br>    &#125;<br>  &#125;<br>&#125;<br><br><span class="hljs-comment"># 同时查询作者跟文章</span><br>query &#123;<br>  AuthorType &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">name</span><br>    age<br>  &#125;<br>  ArticleType &#123;<br>    <span class="hljs-built_in">id</span><br>    <span class="hljs-built_in">text</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>上述都是query语句，GraphQL一共有三种查询语句：</p>
+<ul>
+<li>query（查询）：当获取数据时，应当选取Query类型</li>
+<li>mutation（更改）：当尝试修改数据时，应当使用mutation类型</li>
+<li>subscription（订阅）：当数据更改时，希望进行消息推送，使用subscription类型</li>
+</ul>
+<p>个人总结GraphQL的几个缺点跟不足：</p>
+<ul>
+<li>优点<ul>
+<li>减少请求冗余，传统的开发方式中需要多次请求的内容，使用GraphQL的方式可能只需要一次请求就可以完成</li>
+<li>减少数据冗余，需要什么字段就查询什么字段</li>
+<li>前后端之间的开发方式变得更加灵活，只要后端定义好了Schema，前端就可以根据自己的数据需求自定义查询语句</li>
+</ul>
+</li>
+<li>不足<ul>
+<li>资料比较少=.=！</li>
+<li>相比一些成熟的开发模式，对某些方面的支持还不够好（缓存、错误处理等）</li>
+</ul>
+</li>
+</ul>
+<h4 id="TCP三次握手-amp-四次挥手"><a href="#TCP三次握手-amp-四次挥手" class="headerlink" title="TCP三次握手&amp;四次挥手"></a>TCP三次握手&amp;四次挥手</h4><p><strong>三次握手</strong></p>
+<ol>
+<li>客户端发送一个SYN段，并指明客户端的初始序列号，即ISN(c).</li>
+<li>服务端发送自己的SYN段作为应答，同样指明自己的ISN(s)。为了确认客户端的SYN，将ISN(c)+1作为ACK数值。这样，每发送一个SYN，序列号就会加1，如果有丢失的情况，则会重传。</li>
+<li>为了确认服务器端的SYN，客户端将ISN(s)+1作为返回的ACK数值。</li>
+</ol>
+<p><strong>四次挥手</strong><br>TCP连接是双向传输的对等的模式，就是说双方都可以同时向对方发送或接收数据。这里简称为A方跟B方</p>
+<ol>
+<li>当A要关闭连接时，会发送FIN段告知B，我要关闭连接了。</li>
+<li>B回复一个ACK，表示知道了，此时A的连接关闭。但B仍然可以继续传输数据。</li>
+<li>等到B发送完了所有的数据后，会发送给A一个FIN段来关闭此方向上的连接。</li>
+<li>A收到后发送ACK确认关闭连接。<blockquote>
+<p>SYN —— 用于初始化一个连接的序列号<br>ISN —— 初始序列号<br>ACK —— 确认，使得确认号有效<br>RST —— 重置连接<br>FIN —— 该报文段的发送方已经结束向对方发送数据</p>
+</blockquote>
+</li>
+</ol>
+<h4 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h4><p>对称加密：加密和解密用的是同一个密钥<br>非对称加密（RSA）：有一对密钥，一个是保密的，称为私钥；另一个是公开的，称为公钥。并且<strong>用私钥加密的数据，只有对应的公钥才能解密；用公钥加密的数据，只有对应的私钥才能解密。</strong></p>
+<p>利用非对称加密的特性，当A给B发消息的时候，就可以先用B的公钥去加密，B收到消息，就用自己的私钥解密；反之，B给A发消息，就用A的公钥加密，A收到后用自己的私钥解密。</p>
+<p>但是RSA算法的加密和解密速度比较慢，所以为了提高通信效率，通讯双方用非对称加密的方法传递对称加密的密钥，这样之后就可以用对称加密来通信。所以现在的问题就是如何安全地来传递公钥。</p>
+<p><code>中间人劫持</code>：A给B发送的公钥被中间人C截取，然后C把自己的公钥发给B，冒充A。这样B收到的公钥就是C的，但是B会误以为这是A的公钥，B再用这个公钥对自己的公钥加密，发送给A（实际是C），C拿到信息后用自己的私钥解密，就得到了B的公钥，之后再如法炮制跟A进行通信，就如同一个中间人一样。</p>
+<p>现在问题又回到了，如何声明一个公钥确实是发出者的而不是别人的。这时候，我们需要引入第三方，一个权威的证书颁发机构（CA）。</p>
+<p>具体步骤：</p>
+<ol>
+<li>服务端将它的公钥跟一些基本信息（域名）等用Hash算法生成一个消息摘要（防止被篡改），申请CA机构认证。</li>
+<li>CA机构用自己的私钥对消息摘要进行加密，形成数据签名；然后把服务端的消息摘要跟数据签名合并，形成一个全新的东西，叫做“数字证书”,签发给服务端。</li>
+<li>客户端向服务端发出请求时，服务端返回数字证书。客户端读取证书中的相关的明文信息，采用相同的Hash算法计算得到信息摘要，然后，利用对应CA机构的公钥解密签名数据，对比证书的信息摘要，如果一致，则可以确认证书的合法性，即公钥合法。</li>
+</ol>
+<p>为了防止攻击者伪装成CA机构，这些CA机构本身也会有证书来证明自己的身份。CA的信用就像树级结构一样是分级的，高层的CA给下层的CA做信用背书，而操作系统&amp;浏览器中会内置一些顶层的CA证书，相当于自动信任了他们。</p>
+<h5 id="课外阅读"><a href="#课外阅读" class="headerlink" title="课外阅读"></a>课外阅读</h5><ul>
+<li><a href="https://wsgi.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">WSGI 官方文档</a></li>
+<li><a href="http://uwsgi-docs.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">uWSGI 官方文档</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-3333/" target="_blank" rel="noopener">PEP3333</a></li>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS" target="_blank" rel="noopener">HTTP访问控制（CORS） - MDN</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>闫伟
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/16/web-description/" title="web简介">http://yoursite.com/2020/03/16/web-description/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Python/" rel="tag"># Python</a>
+              <a href="/tags/web/" rel="tag"># web</a>
+              <a href="/tags/WSGI/" rel="tag"># WSGI</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/12/magic-methods-get/" rel="prev" title="Python中getattr、__getattr__、__getattribute__的区别">
+      <i class="fa fa-chevron-left"></i> Python中getattr、__getattr__、__getattribute__的区别
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/18/small-python-web-framework/" rel="next" title="实现一个简单的Python Web框架">
+      实现一个简单的Python Web框架 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前后端分离"><span class="nav-number">1.</span> <span class="nav-text">前后端分离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#技术栈介绍"><span class="nav-number">2.</span> <span class="nav-text">技术栈介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#项目部署、Nginx"><span class="nav-number">3.</span> <span class="nav-text">项目部署、Nginx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WSGI协议简介"><span class="nav-number">4.</span> <span class="nav-text">WSGI协议简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#跨域资源共享CORS介绍"><span class="nav-number">5.</span> <span class="nav-text">跨域资源共享CORS介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web身份验证-Cookie-Session-JWT-OAuth"><span class="nav-number">6.</span> <span class="nav-text">web身份验证 Cookie Session JWT OAuth</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Restful接口规范介绍"><span class="nav-number">7.</span> <span class="nav-text">Restful接口规范介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GraphQL接口介绍"><span class="nav-number">8.</span> <span class="nav-text">GraphQL接口介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TCP三次握手-amp-四次挥手"><span class="nav-number">9.</span> <span class="nav-text">TCP三次握手&amp;四次挥手</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HTTPS"><span class="nav-number">10.</span> <span class="nav-text">HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#课外阅读"><span class="nav-number">10.1.</span> <span class="nav-text">课外阅读</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="闫伟"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">闫伟</p>
+  <div class="site-description" itemprop="description">闫伟的个人博客</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yw94" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yw94" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">闫伟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v4.2.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.7.2
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : 'nnrbix74uATsrIm58DIevuLU-gzGzoHsz',
+      appKey     : 'KLwawqVakAbWqT1OyorIDtGD',
+      placeholder: "y_w",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : true,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
