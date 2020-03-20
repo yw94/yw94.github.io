@@ -163,7 +163,7 @@
 <li>客户端向服务端发出请求时，服务端返回数字证书。客户端读取证书中的相关的明文信息，采用相同的Hash算法计算得到信息摘要，然后，利用对应CA机构的公钥解密签名数据，对比证书的信息摘要，如果一致，则可以确认证书的合法性，即公钥合法。</li>
 </ol>
 <p>为了防止攻击者伪装成CA机构，这些CA机构本身也会有证书来证明自己的身份。CA的信用就像树级结构一样是分级的，高层的CA给下层的CA做信用背书，而操作系统&amp;浏览器中会内置一些顶层的CA证书，相当于自动信任了他们。</p>
-<h5 id="课外阅读"><a href="#课外阅读" class="headerlink" title="课外阅读"></a>课外阅读</h5><ul>
+<h4 id="课外阅读"><a href="#课外阅读" class="headerlink" title="课外阅读"></a>课外阅读</h4><ul>
 <li><a href="https://wsgi.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">WSGI 官方文档</a></li>
 <li><a href="http://uwsgi-docs.readthedocs.io/en/latest/index.html" target="_blank" rel="noopener">uWSGI 官方文档</a></li>
 <li><a href="https://www.python.org/dev/peps/pep-3333/" target="_blank" rel="noopener">PEP3333</a></li>
