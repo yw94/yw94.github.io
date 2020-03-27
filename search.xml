@@ -1,8 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Python装饰器跟装饰器工厂函数</title>
+    <url>/2018/05/16/Python%E8%A3%85%E9%A5%B0%E5%99%A8%E8%B7%9F%E8%A3%85%E9%A5%B0%E5%99%A8%E5%B7%A5%E5%8E%82%E5%87%BD%E6%95%B0/</url>
+    <content><![CDATA[<p><strong><em><code>@wrap</code></em></strong><br><strong><em><code>def func(): pass</code></em></strong></p>
+<p><strong><em><code>@factory()</code></em></strong><br><strong><em><code>def func(): pass</code></em></strong></p>
+<a id="more"></a>
+
+
+<p>在Python中，一切皆对象，包括函数、自定义的变量等等。</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><code class="hljs ruby"><span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">func</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span><br>...     pass<br>... <br><span class="hljs-meta">&gt;&gt;</span>&gt; type(func)<br>&lt;<span class="hljs-class"><span class="hljs-keyword">class</span> '<span class="hljs-title">function</span>'&gt;</span><br></code></pre></td></tr></table></figure>
+<p>可以看出，自定义的函数就是function的实例，函数之所以能够调用，是因为其实现了<code>__call__()</code>方法。</p>
+<h4 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h4><p>装饰器是可调用的对象，其参数是另一个函数「被装饰的函数」。装饰器可能会处理被装饰的函数，然后把它返回，或者将其替换成另一个函数或可调用对象。看下面这个例子。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">decorate</span><span class="hljs-params">(func)</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inner</span><span class="hljs-params">(*args, **kwargs)</span>:</span><br>        <span class="hljs-keyword">return</span> func(*args, **kwargs)<br>    <span class="hljs-keyword">return</span> inner<br><br><span class="hljs-meta">@decorate</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(m: int, n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> m + n<br><br>print(run)  <span class="hljs-comment"># &lt;function decorate.&lt;locals&gt;.inner at 0x1053a66a8&gt;</span><br>print(run(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>))  <span class="hljs-comment"># 5</span><br></code></pre></td></tr></table></figure>
+<p>run函数被decorate装饰器函数装饰之后，我们<code>print(run)</code>发现返回的其实是装饰器内部的inner函数，实际上这是因为被装饰之后，run函数变成了<code>decorate(run(*args, **kwargs))</code>,而decorate函数返回的结果就是inner，也就是<code>print(run)</code>的结果。<br>在inner函数中我们没有做其他操作，直接返回了<code>func(*args, **kwargs)</code>「func就是传入的run」，因此虽然我们调用的run函数被替换掉了，但是调用结果没有变。<br>所以用装饰器装饰一个函数，就相当于把被装饰的函数作为参数传递给装饰器函数，至于返回的是什么，就看装饰器函数想做什么事情了。</p>
+<h4 id="装饰器工厂函数"><a href="#装饰器工厂函数" class="headerlink" title="装饰器工厂函数"></a>装饰器工厂函数</h4><p>有时候简单的装饰器并不能满足我们，我们还想让装饰器接受其他参数。这时候我们可以创建一个装饰器工厂函数，把参数传给它，返回一个装饰器，然后再把它应用到要装饰的函数上。还是来看个例子。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">lazy_object</span><span class="hljs-params">(caches: dict=&#123;&#125;)</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wrap</span><span class="hljs-params">(func)</span>:</span><br>        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inner</span><span class="hljs-params">(*args, **kwargs)</span>:</span><br>            cache_name = func.__name__<br>            <span class="hljs-keyword">if</span> cache_name <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> caches:<br>                caches[cache_name] = func(*args, **kwargs)<br>            <span class="hljs-keyword">return</span> caches[cache_name]<br>        <span class="hljs-keyword">return</span> inner<br>    <span class="hljs-keyword">return</span> wrap<br><br><span class="hljs-meta">@lazy_object()</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> n * <span class="hljs-number">10</span><br><br><span class="hljs-meta">@lazy_object(caches=&#123;"weak": 10&#125;)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">weak</span><span class="hljs-params">(n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> n * n<br><br>print(lazy_object())  <span class="hljs-comment"># &lt;function lazy_object.&lt;locals&gt;.wrap at 0x10467e2f0&gt;</span><br>print(run(<span class="hljs-number">2</span>))  <span class="hljs-comment"># 20</span><br>print(run(<span class="hljs-number">4</span>))  <span class="hljs-comment"># 20</span><br>print(weak(<span class="hljs-number">10</span>))  <span class="hljs-comment"># 10</span><br></code></pre></td></tr></table></figure>
+<p>上面的lazy_object函数就是一个装饰器工厂函数，我们给lazy_object()传入参数，并用它装饰其他函数的时候，实际上真正的装饰器是wrap函数，这里()的作用其实就是调用lazy_object的<code>__call__()</code>方法，调用的结果就是wrap，然后用wrap来装饰被装饰的函数。<br>这个装饰器的作用就是维护一个cache字典，将函数名称相同的结果存储下来，下次再调用同名函数，直接返回已有的结果。<br>通过下面的运行结果就可以看出，第一次运行run(2), cache就变成了{“run”: 20}，第二次运行run(4),就直接返回20了。<br>weak(10)也是一样，由于我们给lazy_object传入了caches={“weak”: 10}，所以就直接返回10，而不会再去执行weak函数内部的运算逻辑。</p>
+<p>装饰器工厂的具体运用，可以参考python标准库中的functools.lru_cache装饰器。</p>
+<blockquote>
+<blockquote>
+<p>流畅的Python 6-7章</p>
+</blockquote>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Python中getattr、__getattr__、__getattribute__的区别</title>
+    <url>/2018/03/20/Python%E4%B8%ADgetattr%E3%80%81__getattr__%E3%80%81__getattribute__%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
+    <content><![CDATA[<a id="more"></a>
+
+
+<h4 id="getattr"><a href="#getattr" class="headerlink" title="getattr"></a>getattr</h4><p>getattr (object, name[, default])是Python的内置函数，它的作用是获取对象的属性。</p>
+<ul>
+<li>object 对象</li>
+<li>name 属性名</li>
+<li>default 当属性不存在时，返回的默认值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs $python3">class Foo:<br>    def __init__(self, x):<br>        self.x &#x3D; x<br><br>f &#x3D; Foo(x&#x3D;10)<br>a &#x3D; getattr(f, &quot;x&quot;)<br>print(a)  # &gt;&gt;&gt; 10<br>b &#x3D; getattr(f, &quot;y&quot;, &quot;NaN&quot;)<br>print(b)  # &gt;&gt;&gt; NaN<br></code></pre></td></tr></table></figure>
+<p><em><code>实际调用的就是__getattribute__方法</code></em></p>
+<h4 id="getattr-1"><a href="#getattr-1" class="headerlink" title="__getattr__"></a>__getattr__</h4><p>重载__getattr__方法对类及其实例<strong>未定义</strong>的属性有效。也就属性是说，如果访问的属性存在，就不会调用__getattr__方法。包括类属性和实例属性。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        print(<span class="hljs-string">f"调用__getattr__"</span>)<br>        print(<span class="hljs-string">f"属性<span class="hljs-subst">&#123;item&#125;</span>不存在"</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br>调用<span class="hljs-strong">__getattr__</span><br>属性y不存在<br><span class="hljs-strong">__getattr__</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="getattribute"><a href="#getattribute" class="headerlink" title="__getattribute__"></a>__getattribute__</h4><p>当访问某个对象的属性时，会无条件的调用__getattribute__方法<br><strong>所以为了避免在方法中出现无限递归的情况，应该总是使用基类的方法来获取属性。</strong></p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        print(<span class="hljs-string">f"调用__getattribute__, 属性值:<span class="hljs-subst">&#123;item&#125;</span>"</span>)<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">return</span> super().__getattribute__(item)<br>        <span class="hljs-keyword">except</span>:<br>            print(<span class="hljs-string">f"<span class="hljs-subst">&#123;self&#125;</span>不存在<span class="hljs-subst">&#123;item&#125;</span>属性"</span>)<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattribute__"</span><br>    <br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__repr__</span><span class="hljs-params">(self)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">f"类Foo(x)"</span><br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">调用<span class="hljs-strong">__getattribute__</span>, 属性值:x<br>10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br>调用<span class="hljs-strong">__getattribute__</span>, 属性值:y<br>类Foo(x)不存在y属性<br><span class="hljs-strong">__getattribute__</span><br></code></pre></td></tr></table></figure>
+
+<p>另外，当同时定义__getattribute__和__getattr__时，__getattr__方法不会再被调用，除非显示调用__getattr__方法或引发AttributeError异常。</p>
+<p>同时存在__getattribute__和__getattr__时，__getattr__方法不会再被调用。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattribute__"</span><br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown"><span class="hljs-strong">__getattribute__</span><br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br><span class="hljs-strong">__getattribute__</span><br></code></pre></td></tr></table></figure>
+
+<p>引发AttributeError异常时，__getattr__方法会再被调用。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">return</span> super().__getattribute__(item)<br>        <span class="hljs-keyword">except</span> AttributeError:<br>            <span class="hljs-keyword">raise</span> AttributeError<br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
+<p>返回结果</p>
+<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br><span class="hljs-strong">__getattr__</span><br></code></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Python进阶</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>web简介</title>
-    <url>/2020/03/16/web%E7%AE%80%E4%BB%8B/</url>
+    <url>/2018/03/16/web%E7%AE%80%E4%BB%8B/</url>
     <content><![CDATA[<p>基于爬虫监控系统的一次简单的web内容分享</p>
 <a id="more"></a>
 
@@ -161,79 +234,6 @@
         <tag>Python</tag>
         <tag>web</tag>
         <tag>WSGI</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python中getattr、__getattr__、__getattribute__的区别</title>
-    <url>/2020/03/12/Python%E4%B8%ADgetattr%E3%80%81__getattr__%E3%80%81__getattribute__%E7%9A%84%E5%8C%BA%E5%88%AB/</url>
-    <content><![CDATA[<a id="more"></a>
-
-
-<h4 id="getattr"><a href="#getattr" class="headerlink" title="getattr"></a>getattr</h4><p>getattr (object, name[, default])是Python的内置函数，它的作用是获取对象的属性。</p>
-<ul>
-<li>object 对象</li>
-<li>name 属性名</li>
-<li>default 当属性不存在时，返回的默认值</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="code"><pre><code class="hljs $python3">class Foo:<br>    def __init__(self, x):<br>        self.x &#x3D; x<br><br>f &#x3D; Foo(x&#x3D;10)<br>a &#x3D; getattr(f, &quot;x&quot;)<br>print(a)  # &gt;&gt;&gt; 10<br>b &#x3D; getattr(f, &quot;y&quot;, &quot;NaN&quot;)<br>print(b)  # &gt;&gt;&gt; NaN<br></code></pre></td></tr></table></figure>
-<p><em><code>实际调用的就是__getattribute__方法</code></em></p>
-<h4 id="getattr-1"><a href="#getattr-1" class="headerlink" title="__getattr__"></a>__getattr__</h4><p>重载__getattr__方法对类及其实例<strong>未定义</strong>的属性有效。也就属性是说，如果访问的属性存在，就不会调用__getattr__方法。包括类属性和实例属性。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        print(<span class="hljs-string">f"调用__getattr__"</span>)<br>        print(<span class="hljs-string">f"属性<span class="hljs-subst">&#123;item&#125;</span>不存在"</span>)<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
-<p>返回结果</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br>调用<span class="hljs-strong">__getattr__</span><br>属性y不存在<br><span class="hljs-strong">__getattr__</span><br></code></pre></td></tr></table></figure>
-
-<h4 id="getattribute"><a href="#getattribute" class="headerlink" title="__getattribute__"></a>__getattribute__</h4><p>当访问某个对象的属性时，会无条件的调用__getattribute__方法<br><strong>所以为了避免在方法中出现无限递归的情况，应该总是使用基类的方法来获取属性。</strong></p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        print(<span class="hljs-string">f"调用__getattribute__, 属性值:<span class="hljs-subst">&#123;item&#125;</span>"</span>)<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">return</span> super().__getattribute__(item)<br>        <span class="hljs-keyword">except</span>:<br>            print(<span class="hljs-string">f"<span class="hljs-subst">&#123;self&#125;</span>不存在<span class="hljs-subst">&#123;item&#125;</span>属性"</span>)<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattribute__"</span><br>    <br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__repr__</span><span class="hljs-params">(self)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">f"类Foo(x)"</span><br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
-<p>返回结果</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">调用<span class="hljs-strong">__getattribute__</span>, 属性值:x<br>10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br>调用<span class="hljs-strong">__getattribute__</span>, 属性值:y<br>类Foo(x)不存在y属性<br><span class="hljs-strong">__getattribute__</span><br></code></pre></td></tr></table></figure>
-
-<p>另外，当同时定义__getattribute__和__getattr__时，__getattr__方法不会再被调用，除非显示调用__getattr__方法或引发AttributeError异常。</p>
-<p>同时存在__getattribute__和__getattr__时，__getattr__方法不会再被调用。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattribute__"</span><br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
-<p>返回结果</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown"><span class="hljs-strong">__getattribute__</span><br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br><span class="hljs-strong">__getattribute__</span><br></code></pre></td></tr></table></figure>
-
-<p>引发AttributeError异常时，__getattr__方法会再被调用。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">return</span> super().__getattribute__(item)<br>        <span class="hljs-keyword">except</span> AttributeError:<br>            <span class="hljs-keyword">raise</span> AttributeError<br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
-<p>返回结果</p>
-<figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br><span class="hljs-strong">__getattr__</span><br></code></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Python进阶</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Python装饰器跟装饰器工厂函数</title>
-    <url>/2018/05/16/Python%E8%A3%85%E9%A5%B0%E5%99%A8%E8%B7%9F%E8%A3%85%E9%A5%B0%E5%99%A8%E5%B7%A5%E5%8E%82%E5%87%BD%E6%95%B0/</url>
-    <content><![CDATA[<p><strong><em><code>@wrap</code></em></strong><br><strong><em><code>def func(): pass</code></em></strong></p>
-<p><strong><em><code>@factory()</code></em></strong><br><strong><em><code>def func(): pass</code></em></strong></p>
-<a id="more"></a>
-
-
-<p>在Python中，一切皆对象，包括函数、自定义的变量等等。</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><code class="hljs ruby"><span class="hljs-meta">&gt;&gt;</span>&gt; <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">func</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span><br>...     pass<br>... <br><span class="hljs-meta">&gt;&gt;</span>&gt; type(func)<br>&lt;<span class="hljs-class"><span class="hljs-keyword">class</span> '<span class="hljs-title">function</span>'&gt;</span><br></code></pre></td></tr></table></figure>
-<p>可以看出，自定义的函数就是function的实例，函数之所以能够调用，是因为其实现了<code>__call__()</code>方法。</p>
-<h4 id="装饰器"><a href="#装饰器" class="headerlink" title="装饰器"></a>装饰器</h4><p>装饰器是可调用的对象，其参数是另一个函数「被装饰的函数」。装饰器可能会处理被装饰的函数，然后把它返回，或者将其替换成另一个函数或可调用对象。看下面这个例子。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">decorate</span><span class="hljs-params">(func)</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inner</span><span class="hljs-params">(*args, **kwargs)</span>:</span><br>        <span class="hljs-keyword">return</span> func(*args, **kwargs)<br>    <span class="hljs-keyword">return</span> inner<br><br><span class="hljs-meta">@decorate</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(m: int, n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> m + n<br><br>print(run)  <span class="hljs-comment"># &lt;function decorate.&lt;locals&gt;.inner at 0x1053a66a8&gt;</span><br>print(run(<span class="hljs-number">2</span>, <span class="hljs-number">3</span>))  <span class="hljs-comment"># 5</span><br></code></pre></td></tr></table></figure>
-<p>run函数被decorate装饰器函数装饰之后，我们<code>print(run)</code>发现返回的其实是装饰器内部的inner函数，实际上这是因为被装饰之后，run函数变成了<code>decorate(run(*args, **kwargs))</code>,而decorate函数返回的结果就是inner，也就是<code>print(run)</code>的结果。<br>在inner函数中我们没有做其他操作，直接返回了<code>func(*args, **kwargs)</code>「func就是传入的run」，因此虽然我们调用的run函数被替换掉了，但是调用结果没有变。<br>所以用装饰器装饰一个函数，就相当于把被装饰的函数作为参数传递给装饰器函数，至于返回的是什么，就看装饰器函数想做什么事情了。</p>
-<h4 id="装饰器工厂函数"><a href="#装饰器工厂函数" class="headerlink" title="装饰器工厂函数"></a>装饰器工厂函数</h4><p>有时候简单的装饰器并不能满足我们，我们还想让装饰器接受其他参数。这时候我们可以创建一个装饰器工厂函数，把参数传给它，返回一个装饰器，然后再把它应用到要装饰的函数上。还是来看个例子。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">lazy_object</span><span class="hljs-params">(caches: dict=&#123;&#125;)</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wrap</span><span class="hljs-params">(func)</span>:</span><br>        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inner</span><span class="hljs-params">(*args, **kwargs)</span>:</span><br>            cache_name = func.__name__<br>            <span class="hljs-keyword">if</span> cache_name <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> caches:<br>                caches[cache_name] = func(*args, **kwargs)<br>            <span class="hljs-keyword">return</span> caches[cache_name]<br>        <span class="hljs-keyword">return</span> inner<br>    <span class="hljs-keyword">return</span> wrap<br><br><span class="hljs-meta">@lazy_object()</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> n * <span class="hljs-number">10</span><br><br><span class="hljs-meta">@lazy_object(caches=&#123;"weak": 10&#125;)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">weak</span><span class="hljs-params">(n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> n * n<br><br>print(lazy_object())  <span class="hljs-comment"># &lt;function lazy_object.&lt;locals&gt;.wrap at 0x10467e2f0&gt;</span><br>print(run(<span class="hljs-number">2</span>))  <span class="hljs-comment"># 20</span><br>print(run(<span class="hljs-number">4</span>))  <span class="hljs-comment"># 20</span><br>print(weak(<span class="hljs-number">10</span>))  <span class="hljs-comment"># 10</span><br></code></pre></td></tr></table></figure>
-<p>上面的lazy_object函数就是一个装饰器工厂函数，我们给lazy_object()传入参数，并用它装饰其他函数的时候，实际上真正的装饰器是wrap函数，这里()的作用其实就是调用lazy_object的<code>__call__()</code>方法，调用的结果就是wrap，然后用wrap来装饰被装饰的函数。<br>这个装饰器的作用就是维护一个cache字典，将函数名称相同的结果存储下来，下次再调用同名函数，直接返回已有的结果。<br>通过下面的运行结果就可以看出，第一次运行run(2), cache就变成了{“run”: 20}，第二次运行run(4),就直接返回20了。<br>weak(10)也是一样，由于我们给lazy_object传入了caches={“weak”: 10}，所以就直接返回10，而不会再去执行weak函数内部的运算逻辑。</p>
-<p>装饰器工厂的具体运用，可以参考python标准库中的functools.lru_cache装饰器。</p>
-<blockquote>
-<blockquote>
-<p>流畅的Python 6-7章</p>
-</blockquote>
-</blockquote>
-]]></content>
-      <categories>
-        <category>Python</category>
-      </categories>
-      <tags>
-        <tag>Python</tag>
       </tags>
   </entry>
 </search>
