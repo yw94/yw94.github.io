@@ -27,7 +27,7 @@
 <meta property="og:site_name" content="你好，我是闫伟">
 <meta property="og:description" content="@wrapdef func(): pass @factory()def func(): pass">
 <meta property="article:published_time" content="2018-05-15T16:00:00.000Z">
-<meta property="article:modified_time" content="2020-03-27T07:12:34.132Z">
+<meta property="article:modified_time" content="2020-03-27T08:35:15.402Z">
 <meta property="article:author" content="闫伟">
 <meta property="article:tag" content="Python">
 <meta name="twitter:card" content="summary">
@@ -226,7 +226,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-27 15:12:34" itemprop="dateModified" datetime="2020-03-27T15:12:34+08:00">2020-03-27</time>
+                <time title="修改时间：2020-03-27 16:35:15" itemprop="dateModified" datetime="2020-03-27T16:35:15+08:00">2020-03-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -283,7 +283,7 @@
 <p>run函数被decorate装饰器函数装饰之后，我们<code>print(run)</code>发现返回的其实是装饰器内部的inner函数，实际上这是因为被装饰之后，run函数变成了<code>decorate(run(*args, **kwargs))</code>,而decorate函数返回的结果就是inner，也就是<code>print(run)</code>的结果。<br>在inner函数中我们没有做其他操作，直接返回了<code>func(*args, **kwargs)</code>「func就是传入的run」，因此虽然我们调用的run函数被替换掉了，但是调用结果没有变。<br>所以用装饰器装饰一个函数，就相当于把被装饰的函数作为参数传递给装饰器函数，至于返回的是什么，就看装饰器函数想做什么事情了。</p>
 <h4 id="装饰器工厂函数"><a href="#装饰器工厂函数" class="headerlink" title="装饰器工厂函数"></a>装饰器工厂函数</h4><p>有时候简单的装饰器并不能满足我们，我们还想让装饰器接受其他参数。这时候我们可以创建一个装饰器工厂函数，把参数传给它，返回一个装饰器，然后再把它应用到要装饰的函数上。还是来看个例子。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">lazy_object</span><span class="hljs-params">(caches: dict=&#123;&#125;)</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wrap</span><span class="hljs-params">(func)</span>:</span><br>        <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">inner</span><span class="hljs-params">(*args, **kwargs)</span>:</span><br>            cache_name = func.__name__<br>            <span class="hljs-keyword">if</span> cache_name <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> caches:<br>                caches[cache_name] = func(*args, **kwargs)<br>            <span class="hljs-keyword">return</span> caches[cache_name]<br>        <span class="hljs-keyword">return</span> inner<br>    <span class="hljs-keyword">return</span> wrap<br><br><span class="hljs-meta">@lazy_object()</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">run</span><span class="hljs-params">(n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> n * <span class="hljs-number">10</span><br><br><span class="hljs-meta">@lazy_object(caches=&#123;"weak": 10&#125;)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">weak</span><span class="hljs-params">(n: int)</span>:</span><br>    <span class="hljs-keyword">return</span> n * n<br><br>print(lazy_object())  <span class="hljs-comment"># &lt;function lazy_object.&lt;locals&gt;.wrap at 0x10467e2f0&gt;</span><br>print(run(<span class="hljs-number">2</span>))  <span class="hljs-comment"># 20</span><br>print(run(<span class="hljs-number">4</span>))  <span class="hljs-comment"># 20</span><br>print(weak(<span class="hljs-number">10</span>))  <span class="hljs-comment"># 10</span><br></code></pre></td></tr></table></figure>
-<p>上面的lazy_object函数就是一个装饰器工厂函数，我们给lazy_object()传入参数，并用它装饰其他函数的时候，实际上真正的装饰器是wrap函数，这里()的作用其实就是调用lazy_object的<code>__call__()</code>方法，调用的结果就是wrap，然后用wrap来装饰被装饰的函数。<br>这个装饰器的作用就是维护一个cache字典，将函数名称相同的结果存储下来，下次再调用同名函数，直接返回已有的结果。<br>通过下面的运行结果就可以看出，第一次运行run(2), cache就变成了{“run”: 20}，第二次运行run(4),就直接返回20了。<br>weak(10)也是一样，由于我们给lazy_object传入了caches={“weak”: 10}，所以就直接返回10，而不会再去执行weak函数内部的运算逻辑。</p>
+<p>上面的lazy_object函数就是一个装饰器工厂函数，我们给lazy_object()传入参数，并用它装饰其他函数的时候，实际上真正的装饰器是wrap函数，这里()的作用其实就是调用lazy_object的<code>__call__()</code>方法，调用的结果就是wrap，然后用wrap来装饰被装饰的函数「这里的warp实际上是一个闭包」。<br>这个装饰器的作用就是维护一个cache字典，将函数名称相同的结果存储下来，下次再调用同名函数，直接返回已有的结果。<br>通过下面的运行结果就可以看出，第一次运行run(2), cache就变成了{“run”: 20}，第二次运行run(4),就直接返回20了。<br>weak(10)也是一样，由于我们给lazy_object传入了caches={“weak”: 10}，所以就直接返回10，而不会再去执行weak函数内部的运算逻辑。</p>
 <p>装饰器工厂的具体运用，可以参考python标准库中的functools.lru_cache装饰器。</p>
 <blockquote>
 <blockquote>
