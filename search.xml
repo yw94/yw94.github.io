@@ -1,6 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Docker学习笔记</title>
+    <url>/2020/02/21/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<div style="width:100%;margin:auto"><img src="/2020/02/21/Docker%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Docker_Logo.png" class=""></div>
+
+<a id="more"></a>
+
+<h4 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h4><h5 id="Docker镜像"><a href="#Docker镜像" class="headerlink" title="Docker镜像"></a>Docker镜像</h5><p>操作系统分为内核和用户空间。对Linux来说，内核启动后，会挂载root文件系统为其提供用户空间支持。<br>Image就是一个特殊的文件系统，除了提供容器运行时所需的程序、库、资源、配置等文件外，还包含了一些为运行时准备的一些配置参数（如匿名卷、环境变量、用户等）。镜像不包含任何动态数据，其内容在构建之后也不会被改变。<br>镜像构建时，会一层层构建，前一层是后一层的基础。每一层构建完就不会再发生改变，后一层上的任何改变只发生在自己这一层。因此，在构建镜像的时候，需要额外小心，每一层尽量只包含该层需要添加的东西，任何额外的东西应该在该层构建结束前清理掉。</p>
+<h5 id="Docker容器"><a href="#Docker容器" class="headerlink" title="Docker容器"></a>Docker容器</h5><p>镜像（<code>Image</code>）和容器（<code>Container</code>）的关系，就像是面向对象程序设计中的<code>类</code>和<code>实例</code>一样，镜像是静态的定义，容器是镜像运行时的实体。容器可以被创建、启动、停止、删除、暂停等。<br>容器的实质是进程，但与直接在宿主执行的进程不同，容器进程运行于属于自己的独立的 命名空间。因此容器可以拥有自己的<code>root</code>文件系统、自己的网络配置、自己的进程空间，甚至自己的用户 ID 空间。<br>每一个容器运行时，是以镜像为基础层，在其上创建一个当前容器的存储层，我们可以称这个为容器运行时读写而准备的存储层为<strong>容器存储层</strong>。<br>按照Docker最佳实践的要求，容器不应该向其存储层内写入任何数据，容器存储层要保持无状态化。所有的文件写入操作，都应该使用数据卷（Volume）、或者绑定宿主目录，在这些位置的读写会跳过容器存储层，直接对宿主（或网络存储）发生读写，其性能和稳定性更高。<br>数据卷的生存周期独立于容器，容器消亡，数据卷不会消亡。因此，使用数据卷后，容器删除或者重新运行之后，数据却不会丢失。</p>
+<h5 id="Docker-Registry"><a href="#Docker-Registry" class="headerlink" title="Docker Registry"></a>Docker Registry</h5><p>Docker Registry是一个集中存储、分发镜像的服务。<br>一个Docker Registry中可以包含多个<strong>仓库</strong>（<code>Repository</code>）；每个仓库可以包含多个<strong>标签</strong>（<code>Tag</code>）；每个标签对应一个镜像。</p>
+<h4 id="使用镜像"><a href="#使用镜像" class="headerlink" title="使用镜像"></a>使用镜像</h4><p>获取镜像<br><code>docker pull [选项] [Docker Registry 地址[:端口号]/]仓库名[:标签]</code><br>e.g. <code>docker pull ubuntu:18.04</code><br>在镜像的基础上运行一个容器<br><code>docker run</code><br>e.g. <code>docker run -it --rm ubuntu:18.04 bash</code></p>
+<ul>
+<li><code>-it</code>：这是两个参数，一个是<code>-i</code>交互式操作，一个是<code>-t</code>终端。</li>
+<li><code>--rm</code>：这个参数是说容器退出后随之将其删除。</li>
+<li><code>ubuntu:18.04</code>：这是指用<code>ubuntu:18.04</code>镜像为基础来启动容器。</li>
+<li><code>bash</code>：放在镜像名后的是<strong>命令</strong>，这里我们希望有个交互式<code>Shell</code>，因此用的是<code>bash</code>。<br>列出镜像<br><code>docker image ls</code><br>删除本地镜像<br><code>docker image rm [选项] &lt;镜像1&gt; [&lt;镜像2&gt; ...]</code></li>
+</ul>
+<h5 id="使用-Dockerfile-定制镜像"><a href="#使用-Dockerfile-定制镜像" class="headerlink" title="使用 Dockerfile 定制镜像"></a>使用 Dockerfile 定制镜像</h5><p>FROM 指定基础镜像<br>RUN 执行命令<br>建议：仅仅使用一个RUN指令，并使用 &amp;&amp; 将各个所需命令串联起来，将多层转化为一层。每一层构建的最后一定要清理掉无关文件。如一些下载、展开的文件，apt缓存文件等。</p>
+<p>构建镜像<br><code>docker build [选项] &lt;上下文路径/URL/-&gt;</code></p>
+<h4 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h4><p>命令</p>
+<h4 id="使用容器"><a href="#使用容器" class="headerlink" title="使用容器"></a>使用容器</h4><p>运行容器<br><code>docker run</code><br>启动已终止容器<br><code>docker container start</code><br>查看容器信息<br><code>docker container ls</code><br>获取容器的输出信息<br><code>docker container logs [container ID or NAMES]</code><br>终止容器<br><code>docker container stop</code><br>重新启动容器<br><code>docker container restart</code><br>进入容器<br><code>docker exec</code><br>e.g. <code>docker exec -it 69d1 bash</code><br>删除容器<br><code>docker container rm</code><br>清理所有处于终止状态的容器<br><code>docker container prune</code></p>
+<h4 id="Docker数据管理"><a href="#Docker数据管理" class="headerlink" title="Docker数据管理"></a>Docker数据管理</h4><p>查看数据卷管理命令<br><code>docker volume --help</code><br>启动一个挂载数据卷的容器<br><code>docker run -d -P --name web -v my-vol:/webapp training/webapp python app.py</code><br>or<br><code>docker run -d -P --name web --mount source=my-vol,target=/webapp training/webapp python app.py</code><br>挂载一个主机<strong>目录</strong>作为数据卷<br><code>docker run -d -P --name web --mount type=bind,source=/src/webapp,target=/opt/webapp training/webapp python app.py</code><br>or<br><code>docker run -d -P --name web -v /src/webapp:/opt/webapp training/webapp python app.py</code><br>上面的命令加载主机的<code>/src/webapp</code>目录到容器的<code>/opt/webapp</code>目录。使用<code>-v</code>参数时如果本地目录不存在Docker会自动为创建一个文件夹；使用<code>--mount</code>参数时如果本地目录不存在，Docker会报错。<br>挂载一个本地主机<strong>文件</strong>作为数据卷<br><code>docker run --rm -it --mount type=bind,source=$HOME/.bash_history,target=/root/.bash_history ubuntu:18.04 bash</code><br>or<br><code>docker run --rm -it -v $HOME/.bash_history:/root/.bash_history ubuntu:18.04 bash</code></p>
+<h4 id="使用网络"><a href="#使用网络" class="headerlink" title="使用网络"></a>使用网络</h4>]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux学习笔记</title>
+    <url>/2020/02/21/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<div style="width:100%;margin:auto"><img src="/2020/02/21/Linux%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/Linux.jpeg" class=""></div>
+
+<a id="more"></a>
+
+<h5 id="改变文件属性与权限"><a href="#改变文件属性与权限" class="headerlink" title="改变文件属性与权限"></a>改变文件属性与权限</h5><ul>
+<li>chown :改变文件拥有者</li>
+<li>chgrp :改变文件所属群组</li>
+<li>chmod :改变文件的权限, SUID, SGID, SBIT 等等的特性</li>
+</ul>
+<h5 id="Linux目录配置的依据-FHS"><a href="#Linux目录配置的依据-FHS" class="headerlink" title="Linux目录配置的依据-FHS"></a>Linux目录配置的依据-FHS</h5>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>网络协议学习笔记</title>
+    <url>/2019/11/09/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>在「极客时间」上购买了刘超老师的《趣谈网络协议》专栏，学习中做一些笔记，方便以后查阅。<br><strong>文中的一些内容跟配图来源于极客时间教程《趣谈网络协议》，如有侵权，请联系我删除。</strong></p>
+<a id="more"></a>
+
+<h4 id="网络分层"><a href="#网络分层" class="headerlink" title="网络分层"></a>网络分层</h4><div style="width:70%;margin:auto"><img src="/2019/11/09/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B.jpg" class="" title="网络包处理程序工作过程"></div>
+
+<p><strong>结论：</strong>只要是在网络上跑的包，都是完整的。可以有下层没上层，绝对不可能有上层没下层。所以，对 TCP 协议来说，三次握手也好，重试也好，只要想发出去包，就要有 IP 层和 MAC 层，不然是发不出去的。</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+  </entry>
+  <entry>
     <title>MySQL要点整理</title>
     <url>/2019/09/18/MySQL%E8%A6%81%E7%82%B9%E6%95%B4%E7%90%86/</url>
     <content><![CDATA[<p>在「极客时间」上购买了林斌奇老师的《MySQL实战45讲》专栏，专栏内容很详实，干货满满，于是做个学习记录，以便日后回顾。<br><strong>文中的一些内容跟配图来源于极客时间教程《MySQL实战45讲》，如有侵权，请联系我删除。</strong></p>
