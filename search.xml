@@ -51,6 +51,210 @@
       </tags>
   </entry>
   <entry>
+    <title>Linux常用命令</title>
+    <url>/2020/01/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/</url>
+    <content><![CDATA[<div style="width:100%;margin:auto"><img src="/2020/01/20/Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/linux.jpg" class=""></div>
+
+<a id="more"></a>
+
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h4 id="Linux命令基本格式"><a href="#Linux命令基本格式" class="headerlink" title="Linux命令基本格式"></a>Linux命令基本格式</h4><h5 id="命令-选项-参数"><a href="#命令-选项-参数" class="headerlink" title="命令  [选项]  [参数]"></a>命令  [选项]  [参数]</h5><p><strong>注意</strong></p>
+<pre><code>个别命令使用不遵循此格式
+当有多个选项时，可以写在一起
+简化选项与完整选项
+-a 等于 --all</code></pre><p><strong>例如</strong><br><strong>ls  [选项]  [文件或目录]</strong></p>
+<pre><code>-a：显示所有文件，包括隐藏文件
+-l：显示详细信息
+-d：查看目录属性
+-h：人性化显示文件大小
+-i：显示inode</code></pre><h4 id="文件权限"><a href="#文件权限" class="headerlink" title="文件权限"></a>文件权限</h4><p><strong>例如</strong><br><strong>-rw-r–r–</strong></p>
+<pre><code>- 文件类型（- 文件  d 目录  l 软链接文件）
+rw-    u所有者
+r--    g所属组
+r--    o其他人
+r 读  w 写  x 执行</code></pre><h4 id="文件处理命令"><a href="#文件处理命令" class="headerlink" title="文件处理命令"></a>文件处理命令</h4><h5 id="目录处理命令"><a href="#目录处理命令" class="headerlink" title="目录处理命令"></a>目录处理命令</h5><p><strong>建立目录</strong><br><strong>mkdir  -p  [目录名]</strong>    # make directory</p>
+<pre><code>-p  递归创建</code></pre><p><strong>切换所在目录</strong><br><strong>cd  [目录]</strong>    # change directory<br>简化操作</p>
+<pre><code>cd  ～    # 进入当前用户的家目录
+cd    # 同上
+cd  -    # 进入上次目录
+cd  ..    # 进入上一级目录
+cd  .    # 进入当前目录</code></pre><p><strong>查询所在目录位置</strong><br><strong>pwd</strong>    # print working directory<br><strong>删除空目录</strong><br><strong>rmdir  [目录名]</strong>    # remove empty directory<br><strong>删除文件或目录</strong><br><strong>rm  -rf  [文件或目录]</strong>    # remove</p>
+<pre><code>-r：删除目录
+-f：不提示确认</code></pre><p><strong>复制命令</strong><br><strong>cp  [选项]  [源文件或目录]  [目标目录]</strong>    # copy</p>
+<pre><code>-r：复制目录
+-p：连带文件属性复制
+-d：若源文件是链接文件，则复制链接属性
+-a：相当于 -pdr</code></pre><p><strong>剪切或重命名命令</strong><br><strong>mv  [源文件或目录]  [目标目录]</strong>    # move<br><strong>常用目录的作用</strong></p>
+<pre><code>/  根目录
+/bin  命令保存目录（普通用户就可以读取的命令）
+/boot  启动目录，启动相关文件
+/dev  设备文件保存目录
+/etc  配置文件保存目录
+/home  普通用户的家目录
+/lib  系统库保存目录
+/mnt  系统挂载目录
+/media  挂载目录
+/root  超级用户的家目录
+/tmp  临时目录
+/sbin  命令保存目录（超级用户）
+/proc  直接写入内存的
+/sys
+/usr  系统软件资源目录
+/usr/bin/  系统命令（普通用户）
+/usr/sbin/  系统命令（超级用户）
+/var  系统相关文档内容
+proc和sys目录不能直接操作，这两个目录保存的是内存的挂载点
+可以在家目录root或home，以及tmp目录下随便放内容</code></pre><h5 id="链接命令"><a href="#链接命令" class="headerlink" title="链接命令"></a>链接命令</h5><p><strong>ln  -s  [原文件]  [目标文件]</strong>    # link  生成链接文件</p>
+<pre><code>-s：创建软链接</code></pre><p><strong>硬链接特征</strong></p>
+<ol>
+<li>拥有相同的i节点和存储block块，可以看作是同一个文件</li>
+<li>可通过i节点识别</li>
+<li>不能跨分区</li>
+<li>不能针对目录使用</li>
+</ol>
+<p><strong>软链接特征</strong></p>
+<ol>
+<li>软链接拥有自己的i节点和block块，但是数据块中只保存原文件的文件名和i节点号，并没有实际的文件数据</li>
+<li>软链接文件权限都为rwxrwxrwx    lrwxrwxrwx  l表示软链接文件</li>
+<li>删除原文件，软链接不能使用</li>
+</ol>
+<h4 id="文件搜索命令"><a href="#文件搜索命令" class="headerlink" title="文件搜索命令"></a>文件搜索命令</h4><h5 id="locate命令格式"><a href="#locate命令格式" class="headerlink" title="locate命令格式"></a>locate命令格式</h5><p><strong>locate  文件名</strong>    # 在后台数据库中按文件名搜索，搜索速度更快<br>locate命令所搜索的后台数据库: <strong>/var/lib/mlicate</strong><br><strong>updatedb</strong>    # 更新数据库<br>搜索遵守/etc/updatedb.conf配置文件</p>
+<ul>
+<li>是否开启搜索限制</li>
+<li>搜索时，不搜索的文件系统</li>
+<li>搜索时，不搜索的文件类型</li>
+<li>搜索时，不搜索的路径</li>
+</ul>
+<h5 id="搜索命令的命令whereis、which"><a href="#搜索命令的命令whereis、which" class="headerlink" title="搜索命令的命令whereis、which"></a>搜索命令的命令whereis、which</h5><p><strong>whereis  命令名</strong>    # 搜索命令可执行文件所在路径及帮助文档所在位置</p>
+<pre><code>-b：只查找可执行文件
+-m：只查找帮助文件</code></pre><p><strong>which  命令名</strong>    # 搜索命令所在路径及别名</p>
+<h5 id="PATH环境变量"><a href="#PATH环境变量" class="headerlink" title="PATH环境变量"></a>PATH环境变量</h5><p>定义的是系统搜索命令的路径<br><strong>echo  $PATH</strong>    # 显示路径</p>
+<h5 id="find命令"><a href="#find命令" class="headerlink" title="find命令"></a>find命令</h5><p><strong>find  [搜索范围]  [搜索条件]</strong><br>搜索条件</p>
+<pre><code>-name：根据名称搜索
+-iname：不区分大小写</code></pre><p><strong>例如</strong><br>find  /  -name  install.log<br><strong>注意</strong></p>
+<ol>
+<li>避免大范围搜索，会非常耗费系统资源</li>
+<li>find是在系统当中搜索符合条件的文件名。如果需要匹配，使用通配符匹配，通配符是完全匹配</li>
+</ol>
+<p><strong>Linux中的通配符</strong></p>
+<pre><code>*    匹配任意字符
+？    匹配任意一个字符
+[]    匹配任意一个中括号内的字符</code></pre><p><strong>find  /root  -user  root</strong>    # 在/root下搜索root用户的文件<br><strong>find  /root  -nouser</strong>    # 在/root下搜索没有所有者的文件<br><strong>find  /var/log/  -mtime  +10</strong>    # 查找10天前改的文件</p>
+<pre><code>atime  文件访问时间 access time
+ctime  改变文件属性时间 change time
+mtime  修改文件内容时间 modify time
+
+-10  10天内修改的文件
+10  10天当天修改的文件
++10  10天前修改的文件</code></pre><p><strong>find  .  -size  25k</strong>    # 在当前目录下查找文件大小是25k的文件<br><strong>find  .  -size  25M</strong>    # 在当前目录下查找文件大小是25M的文件<br><strong>find  .  -size  25</strong>    # 在当前目录下查找文件大小是25个扇区的文件</p>
+<pre><code>-25k  小于25KB的文件
+25k  等于25kKB的文件
++25k  大于25KB的文件</code></pre><p><strong>find  .  -inum  262422</strong>    # 在当前目录下查找节点是262422的文件<br><strong>find  /etc  -size  +20k  -a  -size  -50k</strong>    # 查找/etc目录下，大于20k并且小于50k的文件</p>
+<pre><code>-a：and 逻辑与
+-r：or 逻辑或</code></pre><p><strong>find  /etc  -size  +20k  -a  -size  -50k  -exec  ls  -lh {} ;</strong></p>
+<pre><code># 查找/etc/目录下，大于20k并且小于50k的文件，并显示详细信息
+# -exec  第二命令  {} \;  对搜索结果执行第二命令,这里是执行ls命令</code></pre><h5 id="搜索字符串命令grep"><a href="#搜索字符串命令grep" class="headerlink" title="搜索字符串命令grep"></a>搜索字符串命令grep</h5><p><strong>grep  [选项]  字符串  文件名</strong>    # 在文件当中匹配符合条件的字符串</p>
+<pre><code>-i：忽略大小写
+-v：排除指定字符串</code></pre><h5 id="find命令与grep命令的区别"><a href="#find命令与grep命令的区别" class="headerlink" title="find命令与grep命令的区别"></a>find命令与grep命令的区别</h5><p>find：在系统当中搜索符合条件的文件名，如果需要匹配，使用通配符匹配，通配符是完全匹配。<br>grep：在文件当中搜索符合条件的字符串，如果需要匹配，使用正则表达式进行匹配，正则表达式是包含匹配。</p>
+<h4 id="帮助命令"><a href="#帮助命令" class="headerlink" title="帮助命令"></a>帮助命令</h4><h5 id="帮助命令man"><a href="#帮助命令man" class="headerlink" title="帮助命令man"></a>帮助命令man</h5><p><strong>man 命令</strong>  # 获取指定命令的帮助<br><strong>man -f 命令</strong>  # 查看命令拥有哪个级别的帮助，相当于whatis 命令<br><strong>man -k 命令</strong>  # 查看和命令相关的所有帮助，相当于apropos 命令</p>
+<h5 id="选项帮助"><a href="#选项帮助" class="headerlink" title="选项帮助"></a>选项帮助</h5><p><strong>命令 –help</strong>  # 获取命令选项的帮助</p>
+<h5 id="shell内部命令帮助"><a href="#shell内部命令帮助" class="headerlink" title="shell内部命令帮助"></a>shell内部命令帮助</h5><p><strong>help shell内部命令</strong>  # 获取shell内部命令的帮助<br><strong>例如</strong><br>whereis cd  # 确定cd是否是shell内部命令（无命令执行文件）<br>help cd  # 获取cd命令帮助</p>
+<h5 id="详细命令帮助info"><a href="#详细命令帮助info" class="headerlink" title="详细命令帮助info"></a>详细命令帮助info</h5><p><strong>info 命令</strong></p>
+<pre><code>- 回车：进入子帮助页面（带有*号标记）
+- u：进入上层页面
+- n：进入下一个帮助小节
+- p：进入上一个帮助小节
+- q：退出</code></pre><h4 id="压缩与解压缩命令"><a href="#压缩与解压缩命令" class="headerlink" title="压缩与解压缩命令"></a>压缩与解压缩命令</h4><p><strong>常用压缩格式： .zip   .gz   .bz2       .tar.gz   .tar.bz2</strong></p>
+<h5 id="zip格式压缩"><a href="#zip格式压缩" class="headerlink" title=".zip格式压缩"></a>.zip格式压缩</h5><p><strong>zip 压缩文件名 源文件</strong>  # 压缩文件<br><strong>zip -r 压缩文件名 源文件</strong>  # 压缩目录</p>
+<h5 id="zip格式解压缩"><a href="#zip格式解压缩" class="headerlink" title=".zip格式解压缩"></a>.zip格式解压缩</h5><p><strong>unzip 压缩文件</strong>  # 解压缩.zip文件</p>
+<h5 id="gz格式压缩"><a href="#gz格式压缩" class="headerlink" title=".gz格式压缩"></a>.gz格式压缩</h5><p><strong>gzip 源文件</strong>   # 压缩为.gz格式的压缩文件，源文件会消失<br><strong>gzip -c 源文件 &gt; 压缩文件</strong>   # 压缩为.gz格式，源文件保留<br><strong>例如</strong><br>gzip -c cangls &gt; cangls.gz<br>gzip -r 目录   # 压缩目录下所有的子文件，但是不能压缩目录</p>
+<h5 id="gz格式解压缩"><a href="#gz格式解压缩" class="headerlink" title=".gz格式解压缩"></a>.gz格式解压缩</h5><p><strong>gzip -d 压缩文件</strong>  # 解压缩文件<br><strong>gunzip 压缩文件</strong>  # 解压缩文件</p>
+<h5 id="bz2格式压缩"><a href="#bz2格式压缩" class="headerlink" title=".bz2格式压缩"></a>.bz2格式压缩</h5><p><strong>bzip2 源文件</strong>  # 压缩为.bz2格式，不保留原文件<br><strong>bzip2 -k 源文件</strong>  # 压缩之后保留源文件<br><strong>注意:bzip2命令不能压缩目录</strong></p>
+<h5 id="bz2格式解压缩"><a href="#bz2格式解压缩" class="headerlink" title=".bz2格式解压缩"></a>.bz2格式解压缩</h5><p><strong>bzip2 -d 压缩文件</strong>  # 解压缩，-k保留压缩文件<br><strong>bunzip2 压缩文件</strong>  # 解压缩，-k保留压缩文件</p>
+<h5 id="打包命令tar"><a href="#打包命令tar" class="headerlink" title="打包命令tar"></a>打包命令tar</h5><p><strong>先用tar对文件打包，再将打包文件压缩成gz或bz2格式</strong><br><strong>tar -cvf 打包文件名 源文件</strong></p>
+<pre><code>-c：打包
+-v：显示过程
+-f：指定打包后的文件名</code></pre><p><strong>例如</strong><br>tar -cvf longzls.tar longzls</p>
+<h5 id="解打包命令"><a href="#解打包命令" class="headerlink" title="解打包命令"></a>解打包命令</h5><p><strong>tar -xvf 打包文件名</strong></p>
+<pre><code>-x：解打包</code></pre><p><strong>例如</strong><br>tar -xvf longzls.tar</p>
+<h5 id="tar-gz压缩格式-先打包为-tar格式，再压缩为-gz格式"><a href="#tar-gz压缩格式-先打包为-tar格式，再压缩为-gz格式" class="headerlink" title=".tar.gz压缩格式  # 先打包为.tar格式，再压缩为.gz格式"></a>.tar.gz压缩格式  # 先打包为.tar格式，再压缩为.gz格式</h5><p><strong>tar -zcvf 压缩包名.tar.gz 源文件</strong>  # 压缩打包</p>
+<pre><code>-z：压缩为.tar.gz格式</code></pre><p><strong>tar -zxvf 压缩包名.tar.gz</strong>  # 解压缩</p>
+<pre><code>-x：解压缩.tar.gz格式</code></pre><h5 id="tar-bz2压缩格式"><a href="#tar-bz2压缩格式" class="headerlink" title=".tar.bz2压缩格式"></a>.tar.bz2压缩格式</h5><p><strong>tar  -jcvf  压缩包名.tar.bz2  源文件</strong>  # 压缩打包</p>
+<pre><code>-z：压缩为.tar.bz2格式</code></pre><p><strong>tar  -jxvf  压缩包名.tar.bz2</strong>  # 解压缩</p>
+<pre><code>-x：解压缩.tar.bz2格式</code></pre><p><strong>tar  -jxvf  压缩包名.tar.bz2  -C  指定目录</strong>  # 解压到指定位置</p>
+<h4 id="关机与重启命令"><a href="#关机与重启命令" class="headerlink" title="关机与重启命令"></a>关机与重启命令</h4><h5 id="shutdown命令"><a href="#shutdown命令" class="headerlink" title="shutdown命令"></a>shutdown命令</h5><p><strong>shutdown  [选项]  时间</strong><br>选项：</p>
+<pre><code>-c：取消前一个关机命令
+-h：关机
+-r：重启</code></pre><h5 id="其他关机命令"><a href="#其他关机命令" class="headerlink" title="其他关机命令"></a>其他关机命令</h5><p><strong>halt</strong><br><strong>poweroff</strong><br><strong>init 0</strong></p>
+<h5 id="其他重启命令"><a href="#其他重启命令" class="headerlink" title="其他重启命令"></a>其他重启命令</h5><p><strong>reboot</strong><br><strong>init 6</strong></p>
+<h5 id="系统运行级别"><a href="#系统运行级别" class="headerlink" title="系统运行级别"></a>系统运行级别</h5><ul>
+<li>0    关机</li>
+<li>1    单用户</li>
+<li>2    不完全多用户，不含NFS服务</li>
+<li>3    完全多用户</li>
+<li>4    未分配</li>
+<li>5    图形界面</li>
+<li>6    重启</li>
+</ul>
+<p><strong>runlevel</strong>  # 查询系统运行级别</p>
+<h5 id="退出登录命令"><a href="#退出登录命令" class="headerlink" title="退出登录命令"></a>退出登录命令</h5><p><strong>logout</strong></p>
+<h4 id="挂载命令"><a href="#挂载命令" class="headerlink" title="挂载命令"></a>挂载命令</h4><h5 id="查询与自动挂载"><a href="#查询与自动挂载" class="headerlink" title="查询与自动挂载"></a>查询与自动挂载</h5><p><strong>mount</strong>    # 查询系统中已经挂载的设备<br>依据配置文件/etc/fstab的内容，自动挂载</p>
+<h5 id="挂载命令格式"><a href="#挂载命令格式" class="headerlink" title="挂载命令格式"></a>挂载命令格式</h5><p><strong>mount  [-t 文件系统]  [-o 特殊选项]  设备文件名  挂载点</strong></p>
+<pre><code>-t 文件系统：加入文件系统类型来制定挂载的类型，可以ext3、ext4、iso9660（光盘默认）等文件系统
+-o 特殊选项：可以指定挂载的额外选项</code></pre><h5 id="挂载光盘"><a href="#挂载光盘" class="headerlink" title="挂载光盘"></a>挂载光盘</h5><p><strong>mkdir  /mnt/cdrom/</strong>    # 建立挂载点<br><strong>mount  -t  iso9660  /dev/cdrom  /mnt/cdrom/</strong>    # 挂载光盘<br><strong>mount   /dev/sr0  /mnt/cdrom/</strong></p>
+<h5 id="光盘卸载命令"><a href="#光盘卸载命令" class="headerlink" title="光盘卸载命令"></a>光盘卸载命令</h5><p><strong>umount  设备文件名或挂载点</strong><br><strong>umount  /mnt/cdrom    or    umount  /dev/sr0</strong></p>
+<h5 id="挂载U盘"><a href="#挂载U盘" class="headerlink" title="挂载U盘"></a>挂载U盘</h5><p><strong>fdisk  -l    # 查看U盘设备文件名（/dev/sdb1）</strong><br><strong>mount  -t  vfat  /dev/sdb1  /mnt/usb/</strong><br><strong>注意: Linux默认是不支持NTFS文件系统的</strong></p>
+<h4 id="用户登录查看命令"><a href="#用户登录查看命令" class="headerlink" title="用户登录查看命令"></a>用户登录查看命令</h4><h5 id="查看用户登录信息"><a href="#查看用户登录信息" class="headerlink" title="查看用户登录信息"></a>查看用户登录信息</h5><p><strong>w  [用户名]</strong><br><strong>who    [用户名]</strong></p>
+<h5 id="查询当前登录和过去登录的用户回信息"><a href="#查询当前登录和过去登录的用户回信息" class="headerlink" title="查询当前登录和过去登录的用户回信息"></a>查询当前登录和过去登录的用户回信息</h5><p><strong>last</strong><br>last命令默认是读取/var/log/wtmp文件数据</p>
+<h5 id="查看所有用户的最后一次登陆时间"><a href="#查看所有用户的最后一次登陆时间" class="headerlink" title="查看所有用户的最后一次登陆时间"></a>查看所有用户的最后一次登陆时间</h5><p><strong>lastlog</strong><br>last命令默认是读取/var/log/lastlog文件数据</p>
+<h3 id="shell基础"><a href="#shell基础" class="headerlink" title="shell基础"></a>shell基础</h3><p>echo输出命令<br><strong>echo [选项] [输出内容]</strong></p>
+<h4 id="Bash（shell的一种）的基本功能"><a href="#Bash（shell的一种）的基本功能" class="headerlink" title="Bash（shell的一种）的基本功能"></a>Bash（shell的一种）的基本功能</h4><h5 id="命令别名与快捷键"><a href="#命令别名与快捷键" class="headerlink" title="命令别名与快捷键"></a>命令别名与快捷键</h5><p>查看与设定别名<br><strong>alias</strong>  # 查看系统中所有的命令别名<br><strong>alias 别名=’原命令’</strong>  # 设定命令别名（重启失效）<br>别名永久生效<br>写入环境变量配置文件，例如~/.bashrc<br>删除别名<br><strong>unalias</strong> 别名  # 删除别名<br>命令生效顺序</p>
+<ol>
+<li>第一顺位执行用绝对路径或相对路径执行的命令</li>
+<li>第二顺位执行别名</li>
+<li>第三顺为执行Bash的内部命令</li>
+<li>第四顺位执行按照$PATH环境变量定义的目录查找顺序找到的第一个命令</li>
+</ol>
+<h5 id="常用快捷键"><a href="#常用快捷键" class="headerlink" title="常用快捷键"></a>常用快捷键</h5><p>ctrl+c  强制终止当前命令<br>ctrl+l  清屏<br>ctrl+a  光标移动到命令行首<br>ctrl+e  光标移动到命令行尾<br>ctrl+u 从光标所在位置删除到行首<br>ctrl+z  把命令放入后台<br>ctrl+r  在历史命令中搜索</p>
+<h5 id="历史命令"><a href="#历史命令" class="headerlink" title="历史命令"></a>历史命令</h5><p><strong>history [选项] [历史命令保存文件]</strong><br>选项</p>
+<pre><code>-c：清空历史命令
+-w：把缓存中的历史命令写入历史命令保存文件~/.bash_history</code></pre><p>历史命令的调用</p>
+<ul>
+<li>上、下箭头调用以前的历史命令</li>
+<li>使用”!n”重复执行第n条历史命令</li>
+<li>使用”!!”重复执行上一条命令</li>
+<li>使用”!字串”重复执行最后一条以该字串开头的命令</li>
+</ul>
+<h5 id="输出重定向"><a href="#输出重定向" class="headerlink" title="输出重定向"></a>输出重定向</h5><p>标准输出重定向<br><strong>命令 &gt; 文件</strong>  # 覆盖<br><strong>命令 &gt;&gt; 文件</strong>  # 追加<br>标准错误输出重定向(左右无空格)<br><strong>错误命令 2&gt;文件</strong>  # 覆盖<br><strong>错误命令 2&gt;&gt;文件</strong>  # 追加<br>正确输出和错误输出同时保存<br><strong>命令 &gt; 文件 2&gt;&amp;1</strong>  # 覆盖<br><strong>命令 &gt;&gt; 文件 2&gt;&amp;1</strong>  # 追加<br><strong>命令 &amp;&gt; 文件</strong>  # 覆盖<br><strong>命令 &amp;&gt;&gt; 文件</strong>  # 追加<br><strong>命令&gt;&gt;文件1  2&gt;&gt;文件2</strong>  # 追加至不同文件（正确1 错误2）</p>
+<h5 id="多命令顺序执行"><a href="#多命令顺序执行" class="headerlink" title="多命令顺序执行"></a>多命令顺序执行</h5><p><strong>;   命令1;命令2  顺序执行</strong>    # 半角分号<br><strong>&amp;&amp; 命令1&amp;&amp;命令2  逻辑与</strong><br><strong>|| 命令1||命令2  逻辑或</strong><br><strong>命令 &amp;&amp; echo yes || echo no</strong>  # 判断命令是否正确执行</p>
+<h5 id="管道符"><a href="#管道符" class="headerlink" title="管道符"></a>管道符</h5><p><strong>命令1 | 命令2</strong>    # 命令1的正确输出作为命令2的操作对象，可嵌套运用<br>e.g.<br>ll -a /etc/ | more<br>netstat -an | grep “EATABLISHED”</p>
+<h3 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h3><h4 id="yum命令"><a href="#yum命令" class="headerlink" title="yum命令"></a>yum命令</h4><h5 id="常用yum命令"><a href="#常用yum命令" class="headerlink" title="常用yum命令"></a>常用yum命令</h5><p>查询<br><strong>yum list</strong>  # 查询所有可用软件包列表<br><strong>yum search 关键字</strong>  # 搜索服务器上所有和关键字相关的包<br>安装<br><strong>yum -y install 包名</strong></p>
+<pre><code>- y 自动回答yes</code></pre><p>升级<br><strong>yum -y update 包名</strong><br>卸载<br><strong>yum -y remove 包名</strong><br>服务器使用最小化安装，用啥装啥，尽量不卸载</p>
+<h4 id="RPM安装"><a href="#RPM安装" class="headerlink" title="RPM安装"></a>RPM安装</h4><p>安装<br><strong>rpm -ivh 包全名</strong></p>
+<pre><code>-i （install） 安装
+-v （verbose） 显示详细信息
+-h （hash） 显示进度
+--nodeps不检测依懒性</code></pre><p>RPM包升级<br><strong>rpm -Uvh 包全名（新版本的rpm包）</strong></p>
+<pre><code>-U（upgrade） 升级</code></pre><p>卸载<br><strong>rpm -e 包名</strong></p>
+<pre><code>-e（erase）卸载
+--nodeps不检查依赖性</code></pre><h4 id="RPM包查询"><a href="#RPM包查询" class="headerlink" title="RPM包查询"></a>RPM包查询</h4><h5 id="查询是否安装"><a href="#查询是否安装" class="headerlink" title="查询是否安装"></a>查询是否安装</h5><p><strong>rpm -q 包名</strong></p>
+<pre><code>-q （query） 查询</code></pre><p><strong>rpm -qa</strong></p>
+<pre><code>-a （all） 所有</code></pre><h5 id="查询软件包详细信息"><a href="#查询软件包详细信息" class="headerlink" title="查询软件包详细信息"></a>查询软件包详细信息</h5><p><strong>rpm -qi 包名</strong></p>
+<pre><code>-i （informatinn） 查询软件信息
+-p （package） 查询未安装包信息</code></pre><h5 id="查询包中文件安装位置"><a href="#查询包中文件安装位置" class="headerlink" title="查询包中文件安装位置"></a>查询包中文件安装位置</h5><p><strong>rpm -ql 包名</strong></p>
+<pre><code>-l （list）列表
+-p （package） 查询未安装包信息</code></pre><h5 id="查询系统文件属于哪个RPM包"><a href="#查询系统文件属于哪个RPM包" class="headerlink" title="查询系统文件属于哪个RPM包"></a>查询系统文件属于哪个RPM包</h5><p><strong>rpm -qf 系统文件名</strong></p>
+<pre><code>-f （file）查询系统文件属于哪个软件包</code></pre><h5 id="查询软件包的依赖性"><a href="#查询软件包的依赖性" class="headerlink" title="查询软件包的依赖性"></a>查询软件包的依赖性</h5><p><strong>rpm -qR 包名</strong></p>
+<pre><code>-R （requires） 查询软件包的依赖性
+-p （package） 查询未安装的包信息</code></pre><h4 id="RPM包校验"><a href="#RPM包校验" class="headerlink" title="RPM包校验"></a>RPM包校验</h4><p>RPM包校验<br><strong>rpm -V 已安装的包名</strong></p>
+<pre><code>-V （verify） 校验指定RPM包中的文件</code></pre>]]></content>
+      <categories>
+        <category>Linux</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>网络协议学习笔记</title>
     <url>/2019/11/09/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>在「极客时间」上购买了刘超老师的《趣谈网络协议》专栏，学习中做一些笔记，方便以后查阅。<br><strong>文中的一些内容跟配图来源于极客时间教程《趣谈网络协议》，如有侵权，请联系我删除。</strong></p>
@@ -378,6 +582,22 @@
 <figure class="highlight python"><table><tr><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Foo</span>:</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, x)</span>:</span><br>        self.x = x<br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattr__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"__getattr__"</span><br><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__getattribute__</span><span class="hljs-params">(self, item)</span>:</span><br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-keyword">return</span> super().__getattribute__(item)<br>        <span class="hljs-keyword">except</span> AttributeError:<br>            <span class="hljs-keyword">raise</span> AttributeError<br><br>f = Foo(x=<span class="hljs-number">10</span>)<br>print(f.x)<br>print(<span class="hljs-string">"*"</span> * <span class="hljs-number">20</span>)<br>print(f.y)<br></code></pre></td></tr></table></figure>
 <p>返回结果</p>
 <figure class="highlight markdown"><table><tr><td class="code"><pre><code class="hljs markdown">10<br><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><br><span class="hljs-strong">__getattr__</span><br></code></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>编程语言</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>常用的Python代码</title>
+    <url>/2019/03/16/%E5%B8%B8%E7%94%A8%E7%9A%84Python%E4%BB%A3%E7%A0%81/</url>
+    <content><![CDATA[<p>整理一些可复用的Python代码</p>
+<a id="more"></a>
+
+<h5 id="logger配置"><a href="#logger配置" class="headerlink" title="logger配置"></a>logger配置</h5><p><strong>logger.py</strong></p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br>import logging<br>import os<br>import sys<br><br>BASE_PATH = os.path.dirname(__file__)<br>PROJECT_NAME = os.path.basename(BASE_PATH)<br><br>LOG_PATH = os.path.join(BASE_PATH, <span class="hljs-string">"errors.log"</span>)<br><br>LOG_FORMATTER = logging.Formatter(<br>    <span class="hljs-attribute">fmt</span>=<span class="hljs-string">"[%(levelname)s %(asctime)s %(module)s:%(lineno)d] %(message)s"</span>,<br>    <span class="hljs-attribute">datefmt</span>=<span class="hljs-string">"%Y-%m-%d %H:%M:%S"</span>,<br>)<br><br>logger = logging.Logger(PROJECT_NAME)<br>logger.setLevel(logging.DEBUG)<br><br><span class="hljs-comment"># 创建一个handler，用于写入日志文件</span><br>file_handler = logging.FileHandler(LOG_PATH)<br><br>file_handler.setFormatter(<span class="hljs-attribute">fmt</span>=LOG_FORMATTER)<br>file_handler.setLevel(logging.WARNING)<br><br><span class="hljs-comment"># 创建一个handler，用于输出到控制台</span><br>console_handler = logging.StreamHandler(<span class="hljs-attribute">stream</span>=sys.stdout)<br>console_handler.setFormatter(<span class="hljs-attribute">fmt</span>=LOG_FORMATTER)<br>console_handler.setLevel(logging.ERROR)<br><br><span class="hljs-comment"># 将handler添加到logger</span><br>logger.addHandler(file_handler)<br>logger.addHandler(console_handler)<br></code></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>编程语言</category>
